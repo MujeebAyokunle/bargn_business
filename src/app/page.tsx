@@ -1,101 +1,121 @@
+"use client"
+import { signInApi } from "@/apis";
+import { errorToast, successToast } from "@/helper/functions";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { FiEyeOff } from "react-icons/fi";
+import { IoEyeOutline } from "react-icons/io5";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const router = useRouter()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const signIn = async (e: any) => {
+    e.preventDefault()
+
+    let json = {
+      email,
+      password
+    }
+    console.log(json)
+    signInApi(json, response => {
+      console.log(response)
+      if (!response?.error) {
+        successToast(response?.message)
+        router.push("/dashboard")
+      } else {
+        errorToast(response?.message)
+      }
+    })
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="w-full max-w-lg bg-white p-8 rounded-lg shadow-md">
+        <div className="flex justify-center items-center mb-8">
+          <Image src={"images/logo.svg"} alt="logo" width={200} height={150} />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        <div className="flex justify-center gap-4 mb-4">
+          <button className="p-2 border-2 rounded-lg border-gray-100 hover:border-gray-200">
+            <Image src={"/images/google.jpg"} height={20} width={20} alt="google_login" />
+          </button>
+          <button className="p-2 border-2 rounded-lg border-gray-100 hover:border-gray-200">
+            <Image src={"/images/facebook.jpg"} height={20} width={20} alt="google_login" />
+          </button>
+          <button className="p-2 border-2 rounded-lg border-gray-100 hover:border-gray-200">
+            <Image src={"/images/linkedin.jpg"} height={20} width={20} alt="google_login" />
+          </button>
+        </div>
+
+        <div className="flex items-center justify-center mb-6">
+          <hr className="flex-grow border-gray-300" />
+          <span className="mx-4 text-gray-500 text-sm">Or Continue With Email</span>
+          <hr className="flex-grow border-gray-300" />
+        </div>
+
+        <form onSubmit={signIn}>
+          <div className="mb-4">
+            <label className="block text-[#5E6366] text-[12px] font-medium mb-2">Business Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md focus:outline-none text-black focus:ring-2 focus:none"
+              placeholder="sales@hideoutvillas.com"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-[#5E6366] text-[12px] font-medium mb-2">Password</label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-2 text-black border rounded-md focus:outline-none focus:ring-2 focus:none"
+                placeholder="Password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
+              >
+                {showPassword ? <FiEyeOff /> : <IoEyeOutline />}
+              </button>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Password must be at least 8 characters and must contain at least a <span className="text-[#32936F] font-medium">Capital Letter</span>, a <span className="text-[#32936F] font-medium">Number</span> and a <span className="text-[#32936F] font-medium">Special Character</span>.
+            </p>
+          </div>
+
+          <div className="flex items-center justify-between mb-6">
+            <label className="flex items-center">
+              <input type="checkbox" className="form-checkbox text-indigo-500" />
+              <span className="ml-2 text-sm text-gray-700">Remember me</span>
+            </label>
+            <Link href="/forgotpassword" className="text-sm text-[#EC221F] hover:underline">Forgot Password?</Link>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800"
+          >
+            Log In
+          </button>
+        </form>
+
+        <div className="text-center mt-6">
+          <p className="text-sm text-gray-700">
+            Don’t have an account? <Link href="/signup" className="text-[#3A5AFF] hover:underline">Sign up</Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

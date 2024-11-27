@@ -101,24 +101,42 @@ export const PaymentCardIcon = (props: SVGProps<SVGSVGElement>) => (
 
 export const Logout = (props: SVGProps<SVGSVGElement>) => (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={24}
-      height={24}
-      fill="none"
-      {...props}
+        xmlns="http://www.w3.org/2000/svg"
+        width={24}
+        height={24}
+        fill="none"
+        {...props}
     >
-      <path
-        stroke="#2C2C2C"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={1.5}
-        d="m20 14 1.293-1.293a1 1 0 0 0 0-1.414L20 10"
-      />
-      <path
-        stroke="#2C2C2C"
-        strokeLinecap="round"
-        strokeWidth={1.5}
-        d="M21 12h-8m-7 8a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4m0 16a4 4 0 0 0 4-4V8a4 4 0 0 0-4-4m0 16h8a4 4 0 0 0 4-4M6 4h8a4 4 0 0 1 4 4"
-      />
+        <path
+            stroke="#2C2C2C"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.5}
+            d="m20 14 1.293-1.293a1 1 0 0 0 0-1.414L20 10"
+        />
+        <path
+            stroke="#2C2C2C"
+            strokeLinecap="round"
+            strokeWidth={1.5}
+            d="M21 12h-8m-7 8a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4m0 16a4 4 0 0 0 4-4V8a4 4 0 0 0-4-4m0 16h8a4 4 0 0 0 4-4M6 4h8a4 4 0 0 1 4 4"
+        />
     </svg>
-  )
+)
+
+export const LineChart = (props: SVGProps<SVGSVGElement>) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={10}
+        height={8}
+        fill="none"
+        {...props}
+    >
+        <path
+            stroke="#22C55E"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.5}
+            d="M5.467 1.667H9.2m0 0V5.4m0-3.734L5.467 5.4 3.6 3.533l-2.8 2.8"
+        />
+    </svg>
+)

@@ -1,5 +1,6 @@
 "use client"
 import { signInApi } from "@/apis";
+import ActivityLoader from "@/components/ActivityLoader";
 import { errorToast, successToast } from "@/helper/functions";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,6 +15,7 @@ export default function Home() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const signIn = async (e: any) => {
     e.preventDefault()
@@ -22,9 +24,11 @@ export default function Home() {
       email,
       password
     }
+    setLoading(true)
     console.log(json)
     signInApi(json, response => {
-      console.log(response)
+      setLoading(false)
+
       if (!response?.error) {
         successToast(response?.message)
         router.push("/dashboard")
@@ -106,7 +110,11 @@ export default function Home() {
             type="submit"
             className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800"
           >
-            Log In
+            {
+              loading ?
+                <ActivityLoader />
+                : "Log In"
+            }
           </button>
         </form>
 

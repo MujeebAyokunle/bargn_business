@@ -29,7 +29,6 @@ function Nav({ children }: NavProps) {
 
     const pathName = usePathname()
     const router = useRouter()
-    console.log({ pathName })
 
     const [openOptions, setOpenOptions] = useState(false)
 

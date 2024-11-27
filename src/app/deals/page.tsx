@@ -1,8 +1,11 @@
 "use client"
+import { fetchDealsApi } from '@/apis';
 import Nav from '@/components/Nav.tsx';
 import { dealsData } from '@/helper/data'
+import { errorToast, getPages } from '@/helper/functions';
+import moment from 'moment';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaPlus } from 'react-icons/fa';
 import { FiChevronLeft, FiChevronRight, FiPlus } from 'react-icons/fi';
 
@@ -11,18 +14,44 @@ function Deals() {
     const router = useRouter()
 
     const [activeTab, setActiveTab] = useState("all deals")
+    const [pageNumber, setPageNumber] = useState<number>(1)
+    const [totalPages, setTotalPages] = useState<number>(1)
+    const [deals, setDeals] = useState([])
 
     const statusClasses: any = {
-        Active: "bg-green-100 text-green-700",
-        Archived: "bg-red-100 text-red-700",
-        Processing: "bg-blue-100 text-blue-700",
-        Drafts: "bg-gray-100 text-gray-700",
+        active: "bg-green-100 text-green-700",
+        archived: "bg-red-100 text-red-700",
+        processing: "bg-blue-100 text-blue-700",
+        drafts: "bg-gray-100 text-gray-700",
     };
 
+    // Get initial deals payload
+    useEffect(() => {
+        initialize()
+    }, [activeTab, pageNumber])
+
+    const initialize = () => {
+        
+        let json = {
+            page_number: pageNumber,
+            status: activeTab?.toLowerCase() == "all deals" ? "" : activeTab?.toLowerCase() == "draft" ? "processing" : activeTab?.toLowerCase()
+        }
+        fetchDealsApi(json, response => {
+
+            if (!response?.error) {
+                setTotalPages(response?.totalPages)
+                setDeals(response?.deals)
+            } else {
+                errorToast(response?.message)
+            }
+        })
+    }
+
+    const onPageChange = (page: number) => setPageNumber(page)
 
     return (
         <Nav>
-            <div className="p-6 bg-gray-100 min-h-screen">
+            <div className="p-4 bg-gray-100 min-h-screen">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl text-[#0A0909] font-bold">Deals</h1>
@@ -67,52 +96,60 @@ function Deals() {
                             </tr>
                         </thead>
                         <tbody>
-                            {dealsData.map((deal, index) => (
-                                <tr
-                                    key={index}
-                                    className="border-b hover:bg-gray-50 transition duration-150"
-                                >
-                                    <td className="p-4 flex items-center space-x-4">
-                                        <div className="w-12 h-12 bg-blue-200 rounded-lg"></div>
-                                        <span className="text-sm font-medium text-gray-700">
-                                            {deal.deal}
-                                        </span>
-                                    </td>
-                                    <td className="p-4 text-sm text-gray-700">{deal.price}</td>
-                                    <td className="p-4 text-sm text-gray-700">{deal.category}</td>
-                                    <td className="p-4 text-sm text-gray-700">{deal.available}</td>
-                                    <td className="p-4 text-sm text-gray-700">{deal.expiration}</td>
-                                    <td className="p-4">
-                                        <span
-                                            className={`px-3 py-1 text-sm rounded-full ${statusClasses[deal.status]}`}
-                                        >
-                                            {deal.status}
-                                        </span>
-                                    </td>
-                                </tr>
-                            ))}
+                            {
+                                deals?.length > 0 && (
+                                    <>
+                                        {deals.map((deal: any, index) => (
+                                            <tr
+                                                key={index}
+                                                className="border-b hover:bg-gray-50 transition duration-150"
+                                            >
+                                                <td className="p-4 flex items-center space-x-4">
+                                                    <img src={deal?.image} className="w-12 h-12 bg-blue-200 rounded-lg" />
+                                                    <span className="text-sm font-medium text-gray-700">
+                                                        {deal.name}
+                                                    </span>
+                                                </td>
+                                                <td className="p-4 text-sm text-gray-700">{deal.price}</td>
+                                                <td className="p-4 text-sm text-gray-700">{deal.category}</td>
+                                                <td className="p-4 text-sm text-gray-700">{deal.number_available}</td>
+                                                <td className="p-4 text-sm text-gray-700">{moment(deal.expiration).format('D MMMM YYYY')}</td>
+                                                <td className="p-4">
+                                                    <span
+                                                        className={`px-3 py-1 text-sm rounded-full ${statusClasses[deal.status]}`}
+                                                    >
+                                                        {deal.status}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </>
+                                )
+                            }
                         </tbody>
                     </table>
                     {/* Pagination */}
                     <div className="m-4 flex justify-between items-center mt-6">
-                        <button className="px-4 flex items-center justify-center py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
+                        <button className="px-4 flex items-center justify-center py-2 bg-[#F9FAFB] border border-[#E5E7EB] text-gray-700 rounded-lg hover:bg-gray-300">
                             <FiChevronLeft size={20} />
                             Previous
                         </button>
                         <div className="flex space-x-2">
-                            {[1, 2, 3, 4, 5, "...", 40].map((page, index) => (
+                            {getPages(pageNumber, totalPages).map((page, index) => (
                                 <button
                                     key={index}
-                                    className={`px-3 py-2 rounded-lg ${page === 5
+                                    onClick={() => typeof page === "number" && onPageChange(page)}
+                                    className={`px-3 py-2 rounded-lg ${page === pageNumber
                                         ? "bg-[#EEF2FF] border border-[#6366f1] text-[#6366f1]"
-                                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                                        : "bg-[#F9FAFB] border border-[#E5E7EB] text-gray-700 hover:bg-gray-300"
                                         }`}
+                                    disabled={page === "..."}
                                 >
                                     {page}
                                 </button>
                             ))}
                         </div>
-                        <button className="px-4 py-2 flex justify-center items-center space-x-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
+                        <button className="px-4 py-2 flex justify-center items-center space-x-2 bg-[#F9FAFB] border border-[#E5E7EB] text-gray-700 rounded-lg hover:bg-gray-300">
                             Next
                             <FiChevronRight size={20} />
                         </button>

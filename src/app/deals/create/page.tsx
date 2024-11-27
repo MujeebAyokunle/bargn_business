@@ -6,7 +6,7 @@ import React from 'react'
 function CreateDeal() {
     return (
         <Nav>
-            <div className='p-6'>
+            <div className='p-4'>
                 <div className="mb-6 w-full">
                     <h1 className="text-2xl text-[#0A0909] font-bold">Add Deals</h1>
 

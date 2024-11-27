@@ -9,11 +9,19 @@ export const axiosInstance = axios.create({
     },
 });
 
+const token = localStorage.getItem("authToken");
+
+if (token) {
+    axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+}
+
 export const signInApi = async (json: signinDataTypes, cb: (param: any) => void) => {
     try {
         const response = await axiosInstance.post("/business/login", json)
 
         const token = response.data.token;
+
+        localStorage.setItem("authToken", token);
 
         axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
@@ -71,6 +79,19 @@ export const fetchCategoriesApi = async (cb: (param: any) => void) => {
 export const resendAccountVerificationApi = async (json: { email: string }, cb: (param: any) => void) => {
     try {
         const response = await axiosInstance.post("/account_verification/resend", json)
+
+        cb(response?.data || response)
+    } catch (error: any) {
+        console.log("error", error?.response?.data)
+        cb(error.response.data)
+    }
+}
+
+export const fetchDealsApi = async (json: { page_number: number, status: string }, cb: (param: any) => void) => {
+    try {
+        const response = await axiosInstance.get("/business/deals", {
+            params: json
+        })
 
         cb(response?.data || response)
     } catch (error: any) {

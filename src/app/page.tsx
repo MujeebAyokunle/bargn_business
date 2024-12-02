@@ -2,16 +2,19 @@
 import { signInApi } from "@/apis";
 import ActivityLoader from "@/components/ActivityLoader";
 import { errorToast, successToast } from "@/helper/functions";
+import { setUserData } from "@/lib/features/businessSlice";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FiEyeOff } from "react-icons/fi";
 import { IoEyeOutline } from "react-icons/io5";
+import { useDispatch } from "react-redux";
 
 export default function Home() {
 
   const router = useRouter()
+  const dispatch = useDispatch()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -25,12 +28,13 @@ export default function Home() {
       password
     }
     setLoading(true)
-    console.log(json)
+    
     signInApi(json, response => {
       setLoading(false)
 
       if (!response?.error) {
         successToast(response?.message)
+        dispatch(setUserData(response?.admin))
         router.push("/dashboard")
       } else {
         errorToast(response?.message)

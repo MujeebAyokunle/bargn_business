@@ -1,12 +1,11 @@
 "use client"
 import { fetchDealsApi } from '@/apis';
 import Nav from '@/components/Nav.tsx';
-import { dealsData } from '@/helper/data'
 import { errorToast, getPages } from '@/helper/functions';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
-import { FaPlus } from 'react-icons/fa';
+import Cookies from 'js-cookie';
 import { FiChevronLeft, FiChevronRight, FiPlus } from 'react-icons/fi';
 
 function Deals() {
@@ -27,11 +26,17 @@ function Deals() {
 
     // Get initial deals payload
     useEffect(() => {
+        const cookie = Cookies.get("token")
+        if (!cookie) {
+            router.push("/")
+            return
+        }
+
         initialize()
     }, [activeTab, pageNumber])
 
     const initialize = () => {
-        
+
         let json = {
             page_number: pageNumber,
             status: activeTab?.toLowerCase() == "all deals" ? "" : activeTab?.toLowerCase() == "draft" ? "processing" : activeTab?.toLowerCase()
@@ -130,7 +135,10 @@ function Deals() {
                     </table>
                     {/* Pagination */}
                     <div className="m-4 flex justify-between items-center mt-6">
-                        <button className="px-4 flex items-center justify-center py-2 bg-[#F9FAFB] border border-[#E5E7EB] text-gray-700 rounded-lg hover:bg-gray-300">
+                        <button onClick={() => {
+                            if (pageNumber > 1)
+                                setPageNumber(prev => prev - 1)
+                        }} className="px-4 flex items-center justify-center py-2 bg-[#F9FAFB] border border-[#E5E7EB] text-gray-700 rounded-lg hover:bg-gray-300">
                             <FiChevronLeft size={20} />
                             Previous
                         </button>
@@ -149,7 +157,10 @@ function Deals() {
                                 </button>
                             ))}
                         </div>
-                        <button className="px-4 py-2 flex justify-center items-center space-x-2 bg-[#F9FAFB] border border-[#E5E7EB] text-gray-700 rounded-lg hover:bg-gray-300">
+                        <button onClick={() => {
+                            if (pageNumber < totalPages)
+                                setPageNumber(prev => prev + 1)
+                        }} className="px-4 py-2 flex justify-center items-center space-x-2 bg-[#F9FAFB] border border-[#E5E7EB] text-gray-700 rounded-lg hover:bg-gray-300">
                             Next
                             <FiChevronRight size={20} />
                         </button>

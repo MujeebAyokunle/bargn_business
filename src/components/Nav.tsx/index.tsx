@@ -2,23 +2,22 @@
 import { ColorSchema } from '@/helper/colorScheme';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { FC, ReactNode, useState } from 'react'
+import React, { useState } from 'react'
 import { BsGridFill } from 'react-icons/bs';
-import { FaBook, FaChartLine, FaChartPie, FaCog, FaLock, FaPlus, FaQuestionCircle, FaSignOutAlt, FaUser, FaWallet } from 'react-icons/fa';
 import { FiPlus } from 'react-icons/fi';
-import { GoChevronDown, GoChevronUp, GoPlus } from 'react-icons/go';
-import { IoChevronDown, IoLogOutOutline, IoSearch, IoSettingsOutline, IoSunnyOutline } from 'react-icons/io5';
-import { TbFileInvoice } from 'react-icons/tb';
+import { GoChevronDown, GoChevronUp } from 'react-icons/go';
+import { IoChevronDown, IoChevronUp, IoLogOutOutline, IoSearch, IoSettingsOutline, IoSunnyOutline } from 'react-icons/io5';
 import { ChartIcon, EducationCube, GraphIcon, InvoiceIcon, Logout, PaymentCardIcon } from '../Svgs/icons';
 import { HiOutlineUser } from 'react-icons/hi';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import { PiBell, PiInfo, PiSidebar } from 'react-icons/pi';
-import { IoIosStarOutline } from 'react-icons/io';
+import Cookies from 'js-cookie';
 import { CiStar } from 'react-icons/ci';
 import { VscHistory } from 'react-icons/vsc';
 import { MdOutlineMail } from 'react-icons/md';
 import { SlLock } from 'react-icons/sl';
 import Logo from "../../../public/images/logo.svg"
+import { useAppSelector } from '@/lib/hooks';
 
 
 type NavProps = {
@@ -30,11 +29,27 @@ function Nav({ children }: NavProps) {
     const pathName = usePathname()
     const router = useRouter()
 
+    const { userData } = useAppSelector(data => data.business)
+
     const [openOptions, setOpenOptions] = useState(false)
+    const [openLeftDrop, setOpenLeftDrop] = useState(true)
 
     const navigateFunc = (url: string) => {
         router.push(url)
     }
+
+    const toggleNav = (e: any) => {
+        e.stopPropagation()
+        setOpenLeftDrop(prev => !prev)
+    }
+
+    const logout = () => {
+        localStorage.clear()
+        Cookies.remove("token")
+        setOpenOptions(false)
+        router.push("/")
+    }
+
     return (
         <div className='flex flex-row' >
             <div className='lg:w-1/5 border-r border-r-[#D9D9D9] min-h-screen bg-white' >
@@ -58,21 +73,31 @@ function Nav({ children }: NavProps) {
                                         <span className='ms-2'>Deals</span>
                                     </div>
 
-                                    <IoChevronDown color={ColorSchema.black} />
+                                    {
+                                        openLeftDrop ?
+                                            <IoChevronDown onClick={toggleNav} color={ColorSchema.black} /> :
+                                            <IoChevronUp onClick={toggleNav} color={ColorSchema.black} />
+                                    }
                                 </li>
-                                <li onClick={() => navigateFunc("/deals/create")} className={`flex ms-4 cursor-pointer text-[14px] items-center space-x-2 text-gray-700 py-2 hover:text-black `}>
-                                {/* ${pathName.includes("deals/create") && "nav_active"} */}
-                                    <FiPlus size={22} />
-                                    <span>Create deals</span>
-                                </li>
-                                <li className="flex ms-4 text-[14px] items-center space-x-2 text-gray-700 hover:text-black">
-                                    <GraphIcon />
-                                    <span>Track deals</span>
-                                </li>
-                                <li className="flex ms-4 text-[14px] items-center space-x-3 text-gray-700 hover:text-black">
-                                    <EducationCube />
-                                    <span>Manage deals</span>
-                                </li>
+                                {
+                                    openLeftDrop && (
+                                        <>
+                                            <li onClick={() => navigateFunc("/deals/create")} className={`flex ms-4 cursor-pointer text-[14px] items-center space-x-2 text-gray-700 py-2 hover:text-black `}>
+                                                {/* ${pathName.includes("deals/create") && "nav_active"} */}
+                                                <FiPlus size={22} />
+                                                <span>Create deals</span>
+                                            </li>
+                                            <li className="flex ms-4 text-[14px] items-center space-x-2 text-gray-700 hover:text-black">
+                                                <GraphIcon />
+                                                <span>Track deals</span>
+                                            </li>
+                                            <li className="flex ms-4 text-[14px] items-center space-x-3 text-gray-700 hover:text-black">
+                                                <EducationCube />
+                                                <span>Manage deals</span>
+                                            </li>
+                                        </>
+                                    )
+                                }
                             </ul>
                         </div>
 
@@ -136,9 +161,12 @@ function Nav({ children }: NavProps) {
                         <PiBell className='cursor-pointer' color={ColorSchema.black} size={20} />
 
                         <div onClick={() => setOpenOptions(prev => !prev)} className='flex items-center space-x-3 cursor-pointer'>
-                            <Image src={"/images/profile.png"} width={35} height={35} alt='Profile_image' className='rounded-full ms-3' />
+                            {
+                                userData?.profile_picture &&
+                                <img src={userData?.profile_picture} width={35} height={35} alt='Profile_image' className='rounded-full ms-3' />
+                            }
                             <div>
-                                <p className='text-[14px] text-[#404040] font-semibold -mb-1'>Moni Rou</p>
+                                <p className='text-[14px] text-[#404040] font-semibold -mb-1 leading-tight'>{userData?.business_name}</p>
                                 <p className='text-[12px] text-[#565656] font-medium'>Admin</p>
                             </div>
 
@@ -192,7 +220,7 @@ function Nav({ children }: NavProps) {
 
                                     <hr />
 
-                                    <div className='flex space-x-2' >
+                                    <div onClick={logout} className='flex cursor-pointer space-x-2' >
                                         <IoLogOutOutline color='black' size={18} />
                                         <p className='text-sm font-medium text-[#1F2937]'>Log Out</p>
                                     </div>
@@ -202,7 +230,7 @@ function Nav({ children }: NavProps) {
 
                     </div>
                 </div>
-                <div className='p-4'>
+                <div onClick={() => setOpenOptions(false)} className='p-4'>
                     {children}
                 </div>
             </div>

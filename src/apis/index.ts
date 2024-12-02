@@ -1,4 +1,5 @@
 import { signinDataTypes } from "@/types";
+import Cookies from 'js-cookie';
 import axios from "axios";
 
 // Create an axios instance
@@ -9,10 +10,12 @@ export const axiosInstance = axios.create({
     },
 });
 
-const token = localStorage.getItem("authToken");
-
-if (token) {
-    axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+// Check for token only in the browser environment
+if (typeof window !== "undefined") {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+        axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    }
 }
 
 export const signInApi = async (json: signinDataTypes, cb: (param: any) => void) => {
@@ -22,6 +25,8 @@ export const signInApi = async (json: signinDataTypes, cb: (param: any) => void)
         const token = response.data.token;
 
         localStorage.setItem("authToken", token);
+
+        Cookies.set('token', token, { expires: 7, path: '/' });
 
         axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
@@ -57,6 +62,14 @@ export const sendResetPasswordOtpApi = async (json: { registered_email: string }
 export const completeProfileApi = async (json: any, cb: (param: any) => void) => {
     try {
         const response = await axiosInstance.post("/business/complete_profile", json)
+
+        const token = response.data?.authtoken;
+
+        Cookies.set('token', token, { expires: 7, path: '/' });
+
+        localStorage.setItem("authToken", token);
+
+        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
         cb(response?.data || response)
     } catch (error: any) {
@@ -97,5 +110,58 @@ export const fetchDealsApi = async (json: { page_number: number, status: string 
     } catch (error: any) {
         console.log("error", error?.response?.data)
         cb(error.response.data)
+    }
+}
+
+export const createDealApi = async (json: any, cb: (param: any) => void) => {
+    try {
+        const response = await axiosInstance.post("/business/deals", json, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+
+        cb(response?.data || response)
+    } catch (error: any) {
+        console.log("error", error?.response?.data)
+        cb(error.response.data)
+    }
+}
+
+export const fetchDealDraftApi = async (cb: (param: any) => void) => {
+    try {
+        const response = await axiosInstance.get("/business/deals/draft")
+
+        cb(response?.data || response)
+    } catch (error: any) {
+        console.log("error", error?.response?.data)
+        cb(error.response.data)
+    }
+}
+
+export const createDealDraftApi = async (json: any, cb: (param: any) => void) => {
+    try {
+        const response = await axiosInstance.post("/business/deals/draft", json)
+
+        cb(response?.data || response)
+    } catch (error: any) {
+        console.log("error", error?.response?.data)
+        cb(error.response.data)
+    }
+}
+
+export const getCoordinateApi = async (place_id: string, cb: (param: any) => void) => {
+    try {
+        const response = await axiosInstance.post("/business/coordinate", {
+            place_id
+        })
+
+        cb(response?.data || response)
+    } catch (error: any) {
+        console.log("get coordinate error", error.message)
+        return {
+            error: true,
+            message: error?.response?.data
+        }
     }
 }

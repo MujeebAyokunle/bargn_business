@@ -5,13 +5,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import { BsCamera } from 'react-icons/bs'
 import { IoChevronForward } from 'react-icons/io5'
 import PhoneInput from 'react-phone-input-2'
-import Autocomplete from "react-google-autocomplete";
+// import Autocomplete from "react-google-autocomplete";
 import * as Yup from 'yup';
 import 'react-phone-input-2/lib/style.css'
 import { ErrorMessage, Form, Formik } from 'formik'
 import ActivityLoader from '@/components/ActivityLoader'
 import { errorToast, successToast } from '@/helper/functions'
-import { completeProfileApi, fetchCategoriesApi } from '@/apis'
+import { completeProfileApi, fetchCategoriesApi, getCoordinateApi } from '@/apis'
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 
 const validationSchema = Yup.object({
     businessName: Yup.string().required('Business name is required'),
@@ -31,7 +32,7 @@ function CompleteProfile() {
     const inputRef = useRef<any>()
     const { id } = useParams()
 
-    const apiKey = process.env.GOOGLE_API_KEY;
+    const apiKey = process.env.GOOGLE_API_KEY || "AIzaSyD_hA8Lkcm7jjW6gM9_-VgZjD4O9DJr5dA";
 
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
@@ -108,6 +109,27 @@ function CompleteProfile() {
         })
     }
 
+    const handlePlaceSelect = async (place: any, setFieldValue: any) => {
+
+        // Extracting location details (coordinates, address, etc.)          
+        if (place?.value?.place_id) {
+            // const { description } = place.value;
+
+            // Fetch details using Google Places API (optional step if you want more details)
+            getCoordinateApi(place?.value?.place_id, response => {
+                if (!response?.error) {
+                    setFieldValue("latitude", response?.coordinate?.lat);
+                    setFieldValue("longitude", response?.coordinate?.lng);
+                } else {
+                    setFieldValue("latitude", 0);
+                    setFieldValue("longitude", 0);
+                }
+            })
+        } else {
+            setFieldValue("latitude", 0);
+            setFieldValue("longitude", 0);
+        }
+    };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -219,13 +241,14 @@ function CompleteProfile() {
 
                                 <div>
                                     <label className="block text-sm font-medium text-[#5E6366] text-[15px]">Street Address</label>
-                                    <Autocomplete
+                                    {/* <Autocomplete
                                         apiKey={apiKey}
                                         className="mt-1 w-full px-3 py-2 text-black border rounded-md shadow-sm border-[#5E6366] focus:outline-none focus:ring-none focus:ring-[#5E6366]"
-                                        options={{
-                                            types: ['address'], // Restrict to addresses
-                                            // componentRestrictions: { country: 'us' }, // Restrict to a specific country
-                                        }}
+                                        // options={{
+                                        //     types: ['address'],
+                                        //     // types: ['address'],
+                                        //     // componentRestrictions: { country: 'us' }, // Restrict to a specific country
+                                        // }}
                                         onPlaceSelected={(place: any) => {
 
                                             if (place.geometry) {
@@ -273,7 +296,29 @@ function CompleteProfile() {
                                                 setFieldValue('streetAddress', "")
                                             }
                                         }}
+                                    /> */}
+                                    <GooglePlacesAutocomplete
+                                        apiKey={apiKey}
+                                        selectProps={{
+                                            onChange: (place) => {
+                                                handlePlaceSelect(place, setFieldValue)
+                                            },
+                                            placeholder: 'Search for a location...',
+                                            styles: {
+                                                option: (provided) => ({
+                                                    ...provided,
+                                                    color: 'black',
+                                                    fontSize: 14
+                                                }),
+                                            },
+                                        }}
                                     />
+                                    {/* {selectedPlace && (
+                                        <div>
+                                            <h4>Selected Place:</h4>
+                                            <p className='text-black text-[14px]'>{selectedPlace?.label}</p>
+                                        </div>
+                                    )} */}
                                     <ErrorMessage
                                         name="streetAddress"
                                         component="div"

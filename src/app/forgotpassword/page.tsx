@@ -1,23 +1,36 @@
 "use client"
 import { sendResetPasswordOtpApi } from '@/apis';
+import ActivityLoader from '@/components/ActivityLoader';
 import { errorToast, successToast } from '@/helper/functions';
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
-import React from 'react'
+import React, { useState } from 'react'
 
 function Forgotpassword() {
 
     const router = useRouter()
 
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(false)
+    const [email, setEmail] = useState("")
+
     const submit = (event: any) => {
         event.preventDefault();
 
+        if (!email) {
+            setError(true)
+            return
+        }
+        setError(false)
+
+        setLoading(true)
         let json = {
-            registered_email: ""
+            registered_email: email
         }
 
         sendResetPasswordOtpApi(json, response => {
+            setLoading(false)
             if (!response?.error) {
                 successToast(response?.message)
                 router.push("/resetpassword")
@@ -25,7 +38,6 @@ function Forgotpassword() {
                 errorToast(response?.message)
             }
         })
-
 
     }
     return (
@@ -45,18 +57,26 @@ function Forgotpassword() {
                         <label className="block text-[#5E6366] text-[12px] font-medium mb-2">Business Email</label>
                         <input
                             type="email"
-                            // value={email}
-                            // onChange={(e) => setEmail(e.target.value)}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className="w-full px-4 py-2 border rounded-md focus:outline-none text-black focus:ring-2 focus:none"
                             placeholder="sales@hideoutvillas.com"
                         />
+                        {
+                            error &&
+                            <p className='text-red-500 text-[12px]'>Registered email is required</p>
+                        }
                     </div>
 
                     <button
                         type="submit"
                         className="w-full bg-black text-white mt-3 py-2 rounded-md hover:bg-gray-800"
                     >
-                        Send link
+                        {
+                            loading ?
+                                <ActivityLoader /> :
+                                "Send link"
+                        }
                     </button>
                 </form>
 

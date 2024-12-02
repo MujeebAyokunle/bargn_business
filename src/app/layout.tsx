@@ -4,6 +4,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ToastContainer } from 'react-toastify';
 import Head from 'next/head';
+import StoreProvider from './StoreProvider';
+import Script from 'next/script';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  const apiKey = process.env.GOOGLE_API_KEY;  
+  const apiKey = process.env.GOOGLE_API_KEY;
 
   return (
     <html lang="en">
@@ -41,7 +43,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100`}
       >
-        {children}
+        <StoreProvider >
+          {children}
+        </StoreProvider>
         <ToastContainer />
       </body>
     </html>

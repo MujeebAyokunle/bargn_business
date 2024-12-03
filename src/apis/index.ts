@@ -24,6 +24,8 @@ export const signInApi = async (json: signinDataTypes, cb: (param: any) => void)
 
         const token = response.data.token;
 
+        console.log({ token })
+
         localStorage.setItem("authToken", token);
 
         Cookies.set('token', token, { expires: 7, path: '/' });

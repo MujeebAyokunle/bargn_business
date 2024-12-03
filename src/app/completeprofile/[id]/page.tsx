@@ -13,12 +13,19 @@ import ActivityLoader from '@/components/ActivityLoader'
 import { errorToast, successToast } from '@/helper/functions'
 import { completeProfileApi, fetchCategoriesApi, getCoordinateApi } from '@/apis'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+import { setUserData } from '@/lib/features/businessSlice'
+import { useDispatch } from 'react-redux'
 
 const validationSchema = Yup.object({
     businessName: Yup.string().required('Business name is required'),
     phoneNumber: Yup.string().required('Phone number is required'),
     businessId: Yup.string(),
-    website: Yup.string().url('Invalid URL').required('Website is required'),
+    website: Yup.string()
+        .required('Website is required')
+        .matches(
+            /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$/,
+            'Invalid URL'
+        ).required('Website is required'),
     city: Yup.string().required('City is required'),
     businessCategory: Yup.string().required('Business category is required'),
     state: Yup.string().required('State is required'),
@@ -31,6 +38,7 @@ function CompleteProfile() {
     const router = useRouter()
     const inputRef = useRef<any>()
     const { id } = useParams()
+    const dispatch = useDispatch()
 
     const apiKey = process.env.GOOGLE_API_KEY || "AIzaSyD_hA8Lkcm7jjW6gM9_-VgZjD4O9DJr5dA";
 
@@ -101,7 +109,8 @@ function CompleteProfile() {
             setLoading(false)
             if (!response?.error) {
                 successToast(response.message)
-
+                
+                dispatch(setUserData(response?.admin))
                 router.push("/dashboard")
             } else {
                 errorToast(response?.message)
@@ -113,13 +122,19 @@ function CompleteProfile() {
 
         // Extracting location details (coordinates, address, etc.)          
         if (place?.value?.place_id) {
-            // const { description } = place.value;
-
+            // const { description } = place.value;            
             // Fetch details using Google Places API (optional step if you want more details)
             getCoordinateApi(place?.value?.place_id, response => {
                 if (!response?.error) {
-                    setFieldValue("latitude", response?.coordinate?.lat);
-                    setFieldValue("longitude", response?.coordinate?.lng);
+
+                    setFieldValue("latitude", response?.coordinate?.location?.lat || 0);
+                    setFieldValue("longitude", response?.coordinate?.location?.lng || 0);
+
+                    setFieldValue('country', response?.coordinate?.country);
+                    setFieldValue('streetAddress', place?.label)
+                    setFieldValue('city', response?.coordinate?.city);
+                    setFieldValue('state', response?.coordinate?.state);
+                    setFieldValue('postalCode', response?.coordinate?.postalCode);
                 } else {
                     setFieldValue("latitude", 0);
                     setFieldValue("longitude", 0);

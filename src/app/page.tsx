@@ -28,12 +28,13 @@ export default function Home() {
       password
     }
     setLoading(true)
-    
+
     signInApi(json, response => {
       setLoading(false)
 
       if (!response?.error) {
         successToast(response?.message)
+        
         dispatch(setUserData(response?.admin))
         router.push("/dashboard")
       } else {

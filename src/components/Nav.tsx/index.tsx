@@ -18,6 +18,7 @@ import { MdOutlineMail } from 'react-icons/md';
 import { SlLock } from 'react-icons/sl';
 import Logo from "../../../public/images/logo.svg"
 import { useAppSelector } from '@/lib/hooks';
+import { toTitleCase } from '@/helper/functions';
 
 
 type NavProps = {
@@ -28,6 +29,8 @@ function Nav({ children }: NavProps) {
 
     const pathName = usePathname()
     const router = useRouter()
+
+    const [first_path, second_path] = pathName?.split("/")?.filter(data => data != "")
 
     const { userData } = useAppSelector(data => data.business)
 
@@ -143,9 +146,15 @@ function Nav({ children }: NavProps) {
 
                         <CiStar className='cursor-pointer' size={22} color={ColorSchema.black} />
 
-                        <p className='text-[#00000066] font-semibold text-sm' >Dashboard</p>
-                        <p className='text-[#00000066] font-semibold text-sm'>/</p>
-                        <p className='text-black font-semibold text-sm'>Analytics</p>
+                        <p className='text-[#00000066] font-semibold text-sm' >{toTitleCase(first_path)}</p>
+                        {
+                            (second_path || first_path == "dashboard") ?
+                                <p className='text-[#00000066] font-semibold text-sm'>/</p> : ""
+                        }
+                        {
+                            (second_path || first_path == "dashboard") ?
+                            <p className='text-black font-semibold text-sm'>{second_path ? toTitleCase(second_path) : "Analytics"}</p> : ""
+                        }
                     </div>
 
                     <div className='flex items-center space-x-3' >

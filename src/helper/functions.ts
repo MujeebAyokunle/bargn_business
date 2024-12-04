@@ -48,3 +48,11 @@ export const getPages = (currentPage: number, totalPages: number) => {
     }
     return [...new Set(pages)]; // Remove duplicate dots
 };
+
+export const toTitleCase = (str: string) => {
+    return str
+        .toLowerCase()
+        .split(" ")
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+}

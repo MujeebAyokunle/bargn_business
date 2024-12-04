@@ -72,7 +72,7 @@ function Dashboard() {
 
     const [pageNumber, setPageNumber] = useState(1)
 
-    console.log(dashboardData)
+    // console.log(dashboardData)
 
     useEffect(() => {
 

@@ -1,5 +1,5 @@
 "use client"
-import { fetchDealsApi } from '@/apis';
+import { fetchDealDraftApi, fetchDealsApi } from '@/apis';
 import Nav from '@/components/Nav.tsx';
 import { errorToast, getPages } from '@/helper/functions';
 import moment from 'moment';
@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie';
 import { FiChevronLeft, FiChevronRight, FiPlus } from 'react-icons/fi';
+import { CiEdit } from 'react-icons/ci';
+import { ColorSchema } from '@/helper/colorScheme';
 
 function Deals() {
 
@@ -19,9 +21,9 @@ function Deals() {
 
     const statusClasses: any = {
         active: "bg-green-100 text-green-700",
-        archived: "bg-red-100 text-red-700",
+        archive: "bg-red-100 text-red-700",
         processing: "bg-blue-100 text-blue-700",
-        drafts: "bg-gray-100 text-gray-700",
+        draft: "bg-gray-100 text-gray-700",
     };
 
     // Get initial deals payload
@@ -37,19 +39,43 @@ function Deals() {
 
     const initialize = () => {
 
-        let json = {
-            page_number: pageNumber,
-            status: activeTab?.toLowerCase() == "all deals" ? "" : activeTab?.toLowerCase() == "draft" ? "processing" : activeTab?.toLowerCase()
-        }
-        fetchDealsApi(json, response => {
-
-            if (!response?.error) {
-                setTotalPages(response?.totalPages)
-                setDeals(response?.deals)
-            } else {
-                errorToast(response?.message)
+        if (activeTab?.toLowerCase() == "draft") {
+            let json = {
+                page_number: pageNumber,
+                status: activeTab?.toLowerCase() == "all deals" ? "" : activeTab?.toLowerCase() == "draft" ? "processing" : activeTab?.toLowerCase()
             }
-        })
+
+            fetchDealDraftApi(response => {
+
+                if (!response?.error) {
+                    setTotalPages(response?.totalPages)
+                    setDeals(response?.draft)
+                } else {
+                    errorToast(response?.message)
+                }
+            })
+        } else {
+
+            let json = {
+                page_number: pageNumber,
+                status: activeTab?.toLowerCase() == "all deals" ? "" : activeTab?.toLowerCase() == "draft" ? "processing" : activeTab?.toLowerCase()
+            }
+            fetchDealsApi(json, response => {
+
+                if (!response?.error) {
+                    setTotalPages(response?.totalPages)
+                    setDeals(response?.deals)
+                } else {
+                    errorToast(response?.message)
+                }
+            })
+
+        }
+    }
+
+    const proceedToDraft = (deal: any) => {
+        
+        router.push(`/deals/create?draft=${deal?.id}`)
     }
 
     const onPageChange = (page: number) => setPageNumber(page)
@@ -98,6 +124,11 @@ function Deals() {
                                     Offer Expiration
                                 </th>
                                 <th className="p-2 text-sm font-medium text-gray-700">Status</th>
+                                {
+                                    activeTab?.toLowerCase() == "draft" && (
+                                        <th className="p-2 text-sm font-medium text-gray-700">Edit</th>
+                                    )
+                                }
                             </tr>
                         </thead>
                         <tbody>
@@ -115,17 +146,28 @@ function Deals() {
                                                         {deal.name}
                                                     </span>
                                                 </td>
-                                                <td className="p-4 text-sm text-gray-700">{deal.price}</td>
+                                                <td className="p-4 text-sm text-gray-700">€ {deal.price}</td>
                                                 <td className="p-4 text-sm text-gray-700">{deal.category}</td>
                                                 <td className="p-4 text-sm text-gray-700">{deal.number_available}</td>
-                                                <td className="p-4 text-sm text-gray-700">{moment(deal.expiration).format('D MMMM YYYY')}</td>
+                                                <td className="p-4 text-sm text-gray-700">{deal.expiration ? moment.utc(deal.expiration).format('D MMMM YYYY') : ""}</td>
                                                 <td className="p-4">
                                                     <span
-                                                        className={`px-3 py-1 text-sm rounded-full ${statusClasses[deal.status]}`}
+                                                        className={`px-3 py-1 text-sm rounded-full ${statusClasses[activeTab?.toLowerCase() != "all deals" ? activeTab?.toLowerCase() : new Date(deal.expiration) >= new Date() ? "active" : "archive"]}`}
                                                     >
-                                                        {deal.status}
+                                                        {activeTab?.toLowerCase() !== "all deals" ? activeTab?.toLowerCase() : new Date(deal.expiration) >= new Date() ? "active" : "archive"}
                                                     </span>
                                                 </td>
+                                                {
+                                                    activeTab?.toLowerCase() == "draft" && (
+                                                        <td className="p-4">
+                                                            <span
+                                                                onClick={() => proceedToDraft(deal)}
+                                                                className={`flex items-center justify-center cursor-pointer`}
+                                                            >
+                                                                <CiEdit color={ColorSchema.black} size={18} />
+                                                            </span>
+                                                        </td>
+                                                    )}
                                             </tr>
                                         ))}
                                     </>

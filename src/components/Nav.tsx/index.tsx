@@ -52,7 +52,7 @@ function Nav({ children }: NavProps) {
 
     return (
         <div className='flex flex-row' >
-            <div className='lg:w-1/5 border-r border-r-[#D9D9D9] min-h-screen bg-white' >
+            <div className='lg:w-1/5 border-r border-r-[#D9D9D9] fixed h-screen bg-white' >
                 <div className="flex justify-center items-center my-8">
                     <Image src={Logo} alt="logo" width={130} height={150} />
                 </div>
@@ -136,8 +136,8 @@ function Nav({ children }: NavProps) {
                 </div>
 
             </div>
-            <div className='w-full'>
-                <div className='h-14 border-b bg-white w-[100%] justify-between flex items-center px-6 border-b-[#B2B2B2]'>
+            <div className='w-4/5 ml-[20%]'>
+                <div className='h-14 fixed z-50 border-b bg-white w-[100%] justify-between flex items-center px-6 border-b-[#B2B2B2]'>
                     <div className='flex items-center space-x-4' >
                         <PiSidebar className='cursor-pointer' size={20} color={ColorSchema.black} />
 
@@ -230,7 +230,7 @@ function Nav({ children }: NavProps) {
 
                     </div>
                 </div>
-                <div onClick={() => setOpenOptions(false)} className='p-4'>
+                <div onClick={() => setOpenOptions(false)} className='p-4 mt-14'>
                     {children}
                 </div>
             </div>

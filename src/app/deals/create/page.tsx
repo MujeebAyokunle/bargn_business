@@ -4,10 +4,10 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { createDealApi, createDealDraftApi, fetchDealDraftApi } from '@/apis';
+import { createDealApi, createDealDraftApi, fetchDealDraftApi, fetchSingleDraftApi } from '@/apis';
 import { errorToast, successToast } from '@/helper/functions';
 import ActivityLoader from '@/components/ActivityLoader';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Cookies from 'js-cookie';
 
 
@@ -32,6 +32,7 @@ const validationSchema = Yup.object({
 function CreateDeal() {
 
     const router = useRouter()
+    const draft_id = useSearchParams().get("draft")
 
     const [loading, setLoading] = useState(false)
     const [draftLoading, setDraftLoading] = useState(false)
@@ -48,8 +49,7 @@ function CreateDeal() {
         },
         validationSchema,
         onSubmit: (values, { resetForm }) => {
-            // console.log("Form data submitted:", values);
-            // return
+            
             if (!values.uploadImage) return
 
             setLoading(true)
@@ -94,18 +94,21 @@ function CreateDeal() {
             router.push("/")
             return
         }
+
         fetchSavedDraft()
-    }, [])
+    }, [draft_id])
 
     // Fetch saved draft
     const fetchSavedDraft = () => {
-
-        fetchDealDraftApi(response => {
+        if (!draft_id) return
+        let param = {
+            id: draft_id
+        }
+        fetchSingleDraftApi(param, response => {
 
             if (!response?.error) {
-
                 formik.setValues({
-                    offerExpiration: response?.expiration || new Date().toISOString().split('T')[0],
+                    offerExpiration: response?.draft?.expiration || new Date().toISOString().split('T')[0],
                     dealTitle: response.draft?.name || "",
                     price: response.draft?.price || "",
                     dealsAvailable: response.draft?.number_available || "",

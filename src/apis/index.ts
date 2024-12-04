@@ -141,6 +141,19 @@ export const fetchDealDraftApi = async (cb: (param: any) => void) => {
     }
 }
 
+export const fetchSingleDraftApi = async (param: { id: string }, cb: (param: any) => void) => {
+    try {
+        const response = await axiosInstance.get("/business/draft", {
+            params: param
+        })
+
+        cb(response?.data || response)
+    } catch (error: any) {
+        console.log("error", error?.response?.data)
+        cb(error.response.data)
+    }
+}
+
 export const createDealDraftApi = async (json: any, cb: (param: any) => void) => {
     try {
         const response = await axiosInstance.post("/business/deals/draft", json)

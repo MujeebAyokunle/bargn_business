@@ -18,7 +18,6 @@ import { useDispatch } from 'react-redux'
 import Image from 'next/image'
 import { MdClose } from 'react-icons/md'
 import { RiDeleteBin5Line } from 'react-icons/ri'
-import { CelebrationSvg } from '@/components/Svgs/icons'
 
 const validationSchema = Yup.object({
     businessName: Yup.string().required('Business name is required'),
@@ -141,8 +140,18 @@ function CompleteProfile() {
         const file = event.dataTransfer.files[0];
         if (file) {
 
-            // Generate a preview URL for the dropped image
+            let temp = previewImages
+            let fileTemp = images
+
+            // Generate a preview URL for the selected image
             const previewURL = URL.createObjectURL(file);
+
+            temp.push(previewURL)
+            fileTemp.push(file)
+            setImages([...fileTemp])
+            setPreviewImages([...temp])
+            let imageIndex = temp?.length - 1
+            uploadFile(file, imageIndex)
 
         }
     };
@@ -310,7 +319,7 @@ function CompleteProfile() {
 
             {
                 activeTab != 3 ? (
-                    <div className="w-[50%] flex justify-between items-center h-3 rounded-lg MT-10 my-6">
+                    <div className="w-[45%] flex justify-between items-center h-2 rounded-lg mt-8 my-6">
                         <div className='bg-black h-full rounded-full w-[49%]' />
                         <div className={`${activeTab == 1 ? "bg-[#D9D9D9]" : "bg-black"} h-full rounded-full w-[49%]`} />
                     </div>
@@ -320,7 +329,7 @@ function CompleteProfile() {
             {/* First form tab */}
             {
                 activeTab == 1 ? (
-                    <div className="w-[90%] md:w-[70%] space-y-8 bg-white p-10 rounded-lg shadow-md">
+                    <div className="w-[90%] md:w-[60%] space-y-8 bg-white p-10 rounded-lg shadow-md">
                         <h2 className="text-2xl font-bold text-gray-900">Business Information</h2>
                         <p className="text-sm text-gray-600 mb-4">
                             Tell us more about your business. This information will be used to create your profile and help customers find you.
@@ -538,7 +547,7 @@ function CompleteProfile() {
                         </Formik>
                     </div>
                 ) : activeTab == 2 ? (
-                    <div className="w-[90%] md:w-[70%] space-y-8 bg-white p-10 rounded-lg shadow-md">
+                    <div className="w-[90%] md:w-[60%] space-y-8 bg-white p-10 rounded-lg shadow-md">
                         <div className='flex mb-4 border-b border-b-black pb-10 items-center space-x-4' >
                             <div className='border border-[#D8D8D8] p-3 rounded-full' >
                                 <IoShareOutline size={24} color="#2C2C2C" />
@@ -651,7 +660,7 @@ function CompleteProfile() {
                         </div>
                     </div>
                 ) : (
-                    <div className="w-[90%] md:w-[70%] space-y-8 bg-white p-10 rounded-lg shadow-md">
+                    <div className="w-[90%] md:w-[60%] space-y-8 bg-white p-10 rounded-lg shadow-md">
                         <div className='flex items-center justify-center' >
                             <p className='text-[50px]'> 🎉 </p>
                         </div>

@@ -4,10 +4,10 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { createDealApi, createDealDraftApi, fetchDealDraftApi, fetchSingleDraftApi } from '@/apis';
+import { createDealApi, createDealDraftApi, fetchSingleDraftApi } from '@/apis';
 import { errorToast, successToast } from '@/helper/functions';
 import ActivityLoader from '@/components/ActivityLoader';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Cookies from 'js-cookie';
 
 
@@ -37,6 +37,7 @@ function CreateDeal() {
     const [loading, setLoading] = useState(false)
     const [draftLoading, setDraftLoading] = useState(false)
     const [isDragging, setIsDragging] = useState(false);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
 
     const formik: any = useFormik({
         initialValues: {
@@ -49,7 +50,7 @@ function CreateDeal() {
         },
         validationSchema,
         onSubmit: (values, { resetForm }) => {
-            
+
             if (!values.uploadImage) return
 
             setLoading(true)
@@ -156,6 +157,10 @@ function CreateDeal() {
         const file = event.dataTransfer.files[0];
         if (file) {
             formik.setFieldValue("uploadImage", file);
+
+            // Generate a preview URL for the dropped image
+            const previewURL = URL.createObjectURL(file);
+            setImagePreview(previewURL);
         }
     };
 
@@ -306,9 +311,17 @@ function CreateDeal() {
                                         type="file"
                                         accept="image/*"
                                         className="hidden"
-                                        onChange={(event: any) =>
-                                            formik.setFieldValue("uploadImage", event.currentTarget.files[0])
-                                        }
+                                        onChange={(event: any) => {
+
+                                            const file = event.currentTarget.files[0];
+                                            if (file) {
+                                                formik.setFieldValue("uploadImage", file);
+
+                                                // Generate a preview URL for the selected image
+                                                const previewURL = URL.createObjectURL(file);
+                                                setImagePreview(previewURL);
+                                            }
+                                        }}
                                     />
                                     <Image src={"/images/image.jpg"} alt="drop_image" width={90} height={90} />
                                     <p className="text-sm text-gray-500">
@@ -323,6 +336,17 @@ function CreateDeal() {
                                     <p className="text-xs text-gray-400">Maximum size: 50MB</p>
                                 </div>
                                 {/* Show selected file name */}
+                                {/* Show image preview */}
+                                {imagePreview && (
+                                    <div className="mt-4">
+                                        <p className="text-sm text-gray-500 mb-2">Image Preview:</p>
+                                        <img
+                                            src={imagePreview}
+                                            alt="Selected Preview"
+                                            className="w-40 h-40 object-cover rounded-md"
+                                        />
+                                    </div>
+                                )}
                                 {
                                     formik.values.uploadImage && (
                                         <p className='text-black mt-1 text-[14px]'>{formik.values.uploadImage?.name}</p>

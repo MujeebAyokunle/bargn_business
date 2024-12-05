@@ -55,7 +55,7 @@ function Nav({ children }: NavProps) {
 
     return (
         <div className='flex flex-row' >
-            <div className='lg:w-1/5 border-r border-r-[#D9D9D9] fixed h-screen bg-white' >
+            <div className='lg:w-1/6 border-r border-r-[#D9D9D9] fixed h-screen bg-white' >
                 <div className="flex justify-center items-center my-8">
                     <Image src={Logo} alt="logo" width={130} height={150} />
                 </div>
@@ -139,8 +139,8 @@ function Nav({ children }: NavProps) {
                 </div>
 
             </div>
-            <div className='w-4/5 ml-[20%]'>
-                <div className='h-14 fixed z-50 border-b bg-white w-[100%] justify-between flex items-center px-6 border-b-[#B2B2B2]'>
+            <div className='w-5/6 flex ml-[16.67%]'>
+                <div className='h-14 w-full pr-[18%] fixed z-50 border-b bg-white justify-between flex items-center px-6 border-b-[#B2B2B2]'>
                     <div className='flex items-center space-x-4' >
                         <PiSidebar className='cursor-pointer' size={20} color={ColorSchema.black} />
 
@@ -153,7 +153,7 @@ function Nav({ children }: NavProps) {
                         }
                         {
                             (second_path || first_path == "dashboard") ?
-                            <p className='text-black font-semibold text-sm'>{second_path ? toTitleCase(second_path) : "Analytics"}</p> : ""
+                                <p className='text-black font-semibold text-sm'>{second_path ? toTitleCase(second_path) : "Analytics"}</p> : ""
                         }
                     </div>
 
@@ -172,7 +172,7 @@ function Nav({ children }: NavProps) {
                         <div onClick={() => setOpenOptions(prev => !prev)} className='flex items-center space-x-3 cursor-pointer'>
                             {
                                 userData?.profile_picture &&
-                                <img src={userData?.profile_picture} width={35} height={35} alt='Profile_image' className='rounded-full ms-3' />
+                                <img src={userData?.profile_picture} style={{borderRadius: 17.5, width: 35, height: 35}} alt='Profile_image' className='rounded-full ms-3' />
                             }
                             <div>
                                 <p className='text-[14px] text-[#404040] font-semibold -mb-1 leading-tight'>{userData?.business_name}</p>
@@ -193,7 +193,7 @@ function Nav({ children }: NavProps) {
 
                         {
                             openOptions && (
-                                <div className='w-[200px] absolute right-2 bg-white top-[60px] rounded p-3 py-4 space-y-3' >
+                                <div className='w-[200px] absolute right-[18%] bg-white top-[60px] rounded p-3 py-4 space-y-3' >
                                     <div className='flex space-x-2' >
                                         <HiOutlineUser color='black' size={18} />
                                         <p className='text-sm font-medium text-[#1F2937]'>Account</p>
@@ -239,7 +239,7 @@ function Nav({ children }: NavProps) {
 
                     </div>
                 </div>
-                <div onClick={() => setOpenOptions(false)} className='p-4 mt-14'>
+                <div onClick={() => setOpenOptions(false)} className='p-4 mt-14' style={{ flex: 1 }}>
                     {children}
                 </div>
             </div>

@@ -235,7 +235,7 @@ function Dashboard() {
                                                         <div className='flex items-center w-full justify-between' >
                                                             <p className='text-[#111827] text-[10px] font-medium' >{data}</p>
 
-                                                            <p className='text-[#111827] text-[10px] font-medium'>{dashboardData?.redeemedDealsPercentage[data]?.percentage || 0}%</p>
+                                                            <p className='text-[#111827] text-[10px] font-medium'>{dashboardData?.redeemedDealsPercentage[data]?.percentage?.toFixed(2) || 0}%</p>
                                                         </div>
                                                         <div className='bg-[#E5E7EB] h-[4px] rounded-full w-full' >
                                                             <div className={`bg-[${dashboardData?.redeemedDealsPercentage[data]?.color || "#F881CA"}] ${dashboardData?.redeemedDealsPercentage[data]?.percentage ? `w-[${dashboardData?.redeemedDealsPercentage[data]?.percentage}%]` : "w-[0%]"} h-full `} />
@@ -249,6 +249,7 @@ function Dashboard() {
                                 </div>
                             </div>
 
+                            {/* Sales analytics section */}
                             <div className="p-6 mt-6 bg-white rounded-lg shadow-md">
                                 <div className="flex justify-between items-center mb-4">
                                     <h2 className="text-[15px] text-[#6B7280] font-medium">Sales Analytics Per Deals</h2>
@@ -274,34 +275,32 @@ function Dashboard() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {dashboardSales?.map((item: any, index: number) => {
-                                            // console.log(statusStyles[item.status])
-                                            return (
-                                                <tr key={index} className="border-b hover:bg-gray-50">
-                                                    <td className="py-3 px-4">
-                                                        <input type="checkbox" className="rounded border-[#D1D5DB]" />
-                                                    </td>
-                                                    <td className="py-3 text-[13.81px] text-[#111827] px-4">{item.order}</td>
-                                                    <td className="py-3 px-4 text-[13.81px] text-[#111827] flex items-center gap-3">
-                                                        <img
-                                                            src={item.image}
-                                                            alt={item.deal}
-                                                            className="w-10 h-10 rounded-md"
-                                                        />
-                                                        {item.name}
-                                                    </td>
-                                                    <td className="py-3 text-[13.81px] text-[#111827] px-4">€{item.price}</td>
-                                                    <td className="py-3 px-4">
-                                                        <span
-                                                            className={`px-3 py-1 rounded-full text-sm ${statusClasses[item.status]}`}
-                                                        >
-                                                            {/* statusStyles */}
-                                                            {item.status}
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            )
-                                        })}
+                                        {dashboardSales?.map((item: any, index: number) => (
+                                            <tr key={index} className="border-b hover:bg-gray-50">
+                                                <td className="py-3 px-4">
+                                                    <input type="checkbox" className="rounded border-[#D1D5DB]" />
+                                                </td>
+                                                <td className="py-3 text-[13.81px] text-[#111827] px-4">{item.order_id}</td>
+                                                <td className="py-3 px-4 text-[13.81px] text-[#111827] flex items-center gap-3">
+                                                    <img
+                                                        src={item.image}
+                                                        alt={item.deal}
+                                                        className="w-10 h-10 rounded-md"
+                                                    />
+                                                    {item.name}
+                                                </td>
+                                                <td className="py-3 text-[13.81px] text-[#111827] px-4">€{item.price}</td>
+                                                <td className="py-3 px-4">
+                                                    <span
+                                                        className={`px-3 py-1 rounded-full text-sm ${statusClasses[item.status]}`}
+                                                    >
+                                                        {/* statusStyles */}
+                                                        {item.status}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        )
+                                        )}
                                     </tbody>
                                 </table>
                                 {/* Pagination */}
@@ -371,16 +370,16 @@ function Dashboard() {
                                                             <li key={index} className="flex items-center justify-between">
                                                                 <div className="flex items-center">
                                                                     <img
-                                                                        src={item.image}
+                                                                        src={item?.user?.profile_picture}
                                                                         alt={item.full_name}
                                                                         className="w-10 h-10 rounded-full mr-3"
                                                                     />
                                                                     <div>
-                                                                        <p className="text-[#404040] text-[14px] font-semibold">{item.full_name}</p>
-                                                                        <p className="text-[#565656] text-[12px] font-medium">{item.location}</p>
+                                                                        <p className="text-[#404040] text-[14px] font-semibold">{item?.user?.full_name}</p>
+                                                                        <p className="text-[#565656] text-[12px] font-medium">{item?.location}</p>
                                                                     </div>
                                                                 </div>
-                                                                <p className="text-[#1F2937] font-medium text-[14px]">€{item.price}</p>
+                                                                <p className="text-[#1F2937] font-medium text-[14px]">€{item.revenue}</p>
                                                             </li>
                                                         ))}
                                                     </ul>

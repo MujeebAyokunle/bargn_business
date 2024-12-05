@@ -140,3 +140,15 @@ export const LineChart = (props: SVGProps<SVGSVGElement>) => (
         />
     </svg>
 )
+
+export const CelebrationSvg = (props: SVGProps<SVGSVGElement>) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={100}
+        height={100}
+        fill="none"
+        {...props}
+    >
+        <path fill="#16151C" d="M0 100h100V0H0v100Z" />
+    </svg>
+)

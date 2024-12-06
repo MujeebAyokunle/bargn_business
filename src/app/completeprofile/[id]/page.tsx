@@ -52,7 +52,7 @@ function CompleteProfile() {
     const [images, setImages] = useState<any>([]);
     const [previewImages, setPreviewImages] = useState<any>([]);
     const [imagesUploadPercentage, setImagesUploadPercentage] = useState<any>([]);
-    const [uploadedImageUrls, setUploadedImageUrls] = useState<any>([]);
+    const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([]);
     const [abortControllers, setAbortControllers] = useState<AbortController[]>([]);
     const [activeTab, setActiveTab] = useState<number>(1);
     const [isDragging, setIsDragging] = useState(false);
@@ -313,6 +313,8 @@ function CompleteProfile() {
             return updatedPreviews;
         })
     }
+
+    console.log({ uploadedImageUrls })
 
     return (
         <div className="min-h-screen flex flex-col items-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -604,7 +606,7 @@ function CompleteProfile() {
 
                         {
                             images?.map((image: any, index: number) => (
-                                <div key={index.toString()} className="border-2 border-black rounded-md flex flex-col justify-center my-2 p-3">
+                                <div key={index.toString()} className="border border-black rounded-md flex flex-col justify-center my-2 p-3">
                                     <div className="flex justify-between">
                                         <div className="flex items-start space-x-3 w-full">
                                             <img src={previewImages?.[index]} alt="image" className="h-[60px] w-[60px] rounded" />
@@ -614,8 +616,8 @@ function CompleteProfile() {
                                                     <p className="text-[#979797] font-medium text-[16px]">{image?.size ? (image?.size / (1024 * 1024)).toFixed(2) : 0}mb</p>
                                                 </div>
 
-                                                <div className="flex items-center mt-6 space-x-2">
-                                                    <div className="bg-[#D9D9D9] h-2 rounded-full w-full">
+                                                <div className="flex items-center mt-0 space-x-2">
+                                                    <div className="bg-[#D9D9D9] h-[6px] rounded-full w-full">
                                                         {/* Use inline styles to dynamically set the width */}
                                                         <div
                                                             className="bg-[#39AEF2] h-full rounded-full"
@@ -670,6 +672,16 @@ function CompleteProfile() {
                             <p className="text-sm text-gray-600 mb-4">
                                 Your images have been uploaded successfully
                             </p>
+                        </div>
+
+                        <div className='flex justify-center align-center'>
+                            <div className='grid grid-cols-1 md:grid-cols-2 gap-4' >
+                                {
+                                    uploadedImageUrls?.map((data: string, index: number) => (
+                                        <img src={data} alt={data} key={index} style={{ width: 300, height: 166, objectFit: "cover" }} className='rounded' />
+                                    ))
+                                }
+                            </div>
                         </div>
 
                         {/* Bottom buttons */}

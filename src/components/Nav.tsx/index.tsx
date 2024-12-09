@@ -85,16 +85,16 @@ function Nav({ children }: NavProps) {
                                 {
                                     openLeftDrop && (
                                         <>
-                                            <li onClick={() => navigateFunc("/deals/create")} className={`flex ps-4 cursor-pointer text-[14px] items-center space-x-2 text-gray-700 ${(pathName.includes("deals") && pathName.includes("create") ? "bg-[#f7f7f7] border-l-[3px] border-l-black rounded-r-lg" : "")} py-2 hover:text-black `}>
+                                            <li onClick={() => navigateFunc("/deals/create")} className={`flex ps-8 cursor-pointer text-[14px] items-center space-x-2 text-gray-700 ${(pathName.includes("deals") && pathName.includes("create") ? "bg-[#f7f7f7] border-l-[3px] border-l-black rounded-r-lg" : "")} py-2 hover:text-black `}>
                                                 {/* ${pathName.includes("deals/create") && "nav_active"} */}
                                                 <FiPlus size={22} />
                                                 <span>Create deals</span>
                                             </li>
-                                            <li className="flex ms-4 text-[14px] items-center space-x-2 text-gray-700 hover:text-black">
+                                            <li className="flex ms-8 text-[14px] items-center space-x-2 text-gray-700 hover:text-black">
                                                 <GraphIcon />
                                                 <span>Track deals</span>
                                             </li>
-                                            <li onClick={() => navigateFunc("/deals/manage")} className={`flex ps-4 cursor-pointer text-[14px] ${(pathName.includes("deals") && pathName.includes("manage") ? "bg-[#f7f7f7] border-l-[3px] border-l-black rounded-r-lg" : "")} py-2 items-center space-x-3 text-gray-700 hover:text-black`}>
+                                            <li onClick={() => navigateFunc("/deals/manage")} className={`flex ps-8 cursor-pointer text-[14px] ${(pathName.includes("deals") && pathName.includes("manage") ? "bg-[#f7f7f7] border-l-[3px] border-l-black rounded-r-lg" : "")} py-2 items-center space-x-3 text-gray-700 hover:text-black`}>
                                                 <EducationCube />
                                                 <span>Manage deals</span>
                                             </li>
@@ -117,7 +117,7 @@ function Nav({ children }: NavProps) {
                                 <PaymentCardIcon />
                                 <span>Finance</span>
                             </li>
-                            <li onClick={() => navigateFunc("/settings")} className={`flex cursor-pointer px-3 py-2 text-[14px] items-center space-x-2 text-gray-700 hover:text-black ${pathName.includes("settings") && "nav_active"}`}>
+                            <li onClick={() => navigateFunc("/settings/profile")} className={`flex cursor-pointer px-3 py-2 text-[14px] items-center space-x-2 text-gray-700 hover:text-black ${pathName.includes("settings") && "nav_active"}`}>
                                 <IoSettingsOutline size={22} />
                                 <span>Account Settings</span>
                             </li>

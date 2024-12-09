@@ -2,6 +2,7 @@
 import Nav from '@/components/Nav.tsx'
 import { useRouter } from 'next/navigation'
 import React from 'react'
+import { FaFacebookF } from 'react-icons/fa'
 
 function Settings() {
 
@@ -14,21 +15,25 @@ function Settings() {
                 <div className="mb-6 border border-[#979797] rounded-lg p-4">
                     <h3 className="text-[20px] text-black font-medium mb-2">Language</h3>
                     <label className="block text-[12px] text-[#5e6366] mb-1 ">Choose Language</label>
-                    <select className="w-full border border-gray-300 rounded-lg px-3 py-2">
+                    <select className="w-full border border-[#979797] focus:outline-none rounded-lg px-3 py-2">
                         <option>English</option>
                         {/* Add more options as needed */}
                     </select>
                 </div>
 
                 {/* Notifications Section */}
-                <div className="mb-6 border rounded-lg p-4">
-                    <h3 className="text-lg font-medium mb-2">Notifications</h3>
-                    <p className="text-sm text-gray-600 mb-4">Choose notifications method</p>
+                <div className="mb-6 border border-[#979797] rounded-lg p-4">
+                    <h3 className="text-[20px] text-black font-medium mb-2">Notifications</h3>
+                    <div className='flex justify-between items-center' >
+                        <p className="block text-[12px] text-[#5e6366] mb-1 ">Choose notifications method</p>
+
+                        <button className="text-lg underline text-black font-bold">Edit</button>
+                    </div>
 
                     {/* Text Messages */}
                     <div className="flex items-center justify-between mb-4">
-                        <div>
-                            <label className="block text-sm text-gray-600">Text Messages</label>
+                        <div className='w-full'>
+                            <label className="font-medium text-[16px] text-[#2c2c2c] mb-1 ">Text Messages</label>
                             <input
                                 type="text"
                                 value="+358-402345678"
@@ -36,13 +41,12 @@ function Settings() {
                                 className="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 bg-gray-100 text-gray-800 cursor-not-allowed"
                             />
                         </div>
-                        <button className="text-sm text-blue-600 font-medium">Edit</button>
                     </div>
 
                     {/* Email Address */}
                     <div className="flex items-center justify-between">
-                        <div>
-                            <label className="block text-sm text-gray-600">Email Address</label>
+                        <div className='w-full'>
+                            <label className="font-medium text-[16px] text-[#2c2c2c] mb-1 ">Email Address</label>
                             <input
                                 type="email"
                                 value="moniroy@bargn.net"
@@ -54,16 +58,16 @@ function Settings() {
                 </div>
 
                 {/* Socials Section */}
-                <div className="border rounded-lg p-4">
-                    <h3 className="text-lg font-medium mb-2">Socials</h3>
-                    <p className="text-sm text-gray-600 mb-4">Link your social profiles</p>
+                <div className="border border-[#979797] rounded-lg p-4">
+                    <h3 className="text-[20px] text-black font-medium mb-2">Socials</h3>
+                    <p className="block text-[12px] text-[#5e6366] mb-1 ">Link your social profiles</p>
 
                     {/* Social Links */}
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
-                                    <span className="text-white text-sm font-bold">F</span>
+                                <div className="w-6 h-6 rounded-full flex items-center justify-center">
+                                <FaFacebookF size={18} color='blue' />
                                 </div>
                                 <span className="text-gray-800">Facebook</span>
                             </div>

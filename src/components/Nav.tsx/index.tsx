@@ -69,7 +69,7 @@ function Nav({ children }: NavProps) {
                     <nav className="space-y-6">
                         <div>
 
-                            <ul className="mt-2 space-y-4">
+                            <ul className="mt-2 space-y-3">
                                 <li onClick={() => navigateFunc("/deals")} className={`flex justify-between items-center text-gray-700 px-3 py-2 w-full hover:text-black cursor-pointer ${pathName.includes("deals") && "nav_active"}`}>
                                     <div className='flex text-[14px] items-center'>
                                         <InvoiceIcon />
@@ -85,7 +85,7 @@ function Nav({ children }: NavProps) {
                                 {
                                     openLeftDrop && (
                                         <>
-                                            <li onClick={() => navigateFunc("/deals/create")} className={`flex ms-4 cursor-pointer text-[14px] items-center space-x-2 text-gray-700 py-2 hover:text-black `}>
+                                            <li onClick={() => navigateFunc("/deals/create")} className={`flex ps-4 cursor-pointer text-[14px] items-center space-x-2 text-gray-700 ${(pathName.includes("deals") && pathName.includes("create") ? "bg-[#f7f7f7] border-l-[3px] border-l-black rounded-r-lg" : "")} py-2 hover:text-black `}>
                                                 {/* ${pathName.includes("deals/create") && "nav_active"} */}
                                                 <FiPlus size={22} />
                                                 <span>Create deals</span>
@@ -94,7 +94,7 @@ function Nav({ children }: NavProps) {
                                                 <GraphIcon />
                                                 <span>Track deals</span>
                                             </li>
-                                            <li className="flex ms-4 text-[14px] items-center space-x-3 text-gray-700 hover:text-black">
+                                            <li onClick={() => navigateFunc("/deals/manage")} className={`flex ps-4 cursor-pointer text-[14px] ${(pathName.includes("deals") && pathName.includes("manage") ? "bg-[#f7f7f7] border-l-[3px] border-l-black rounded-r-lg" : "")} py-2 items-center space-x-3 text-gray-700 hover:text-black`}>
                                                 <EducationCube />
                                                 <span>Manage deals</span>
                                             </li>
@@ -104,22 +104,22 @@ function Nav({ children }: NavProps) {
                             </ul>
                         </div>
 
-                        <ul className="space-y-3">
-                            <li className="flex items-center space-x-2 text-gray-700 text-[14px] hover:text-black">
+                        <ul className="space-y-1">
+                            <li className="flex px-3 py-2 items-center space-x-2 text-gray-700 text-[14px] hover:text-black">
                                 <HiOutlineUser size={22} />
                                 <span>Customer</span>
                             </li>
-                            <li className="flex items-center space-x-2 text-gray-700 text-[14px] hover:text-black">
+                            <li className="flex px-3 py-2  items-center space-x-2 text-gray-700 text-[14px] hover:text-black">
                                 <ChartIcon />
                                 <span>Analytics</span>
                             </li>
-                            <li className="flex text-[14px] items-center space-x-2 text-gray-700 hover:text-black">
+                            <li className="flex px-3 py-2  text-[14px] items-center space-x-2 text-gray-700 hover:text-black">
                                 <PaymentCardIcon />
                                 <span>Finance</span>
                             </li>
-                            <li className="flex text-[14px] items-center space-x-2 text-gray-700 hover:text-black">
+                            <li onClick={() => navigateFunc("/settings")} className={`flex cursor-pointer px-3 py-2 text-[14px] items-center space-x-2 text-gray-700 hover:text-black ${pathName.includes("settings") && "nav_active"}`}>
                                 <IoSettingsOutline size={22} />
-                                <span>Settings</span>
+                                <span>Account Settings</span>
                             </li>
                         </ul>
 
@@ -172,7 +172,7 @@ function Nav({ children }: NavProps) {
                         <div onClick={() => setOpenOptions(prev => !prev)} className='flex items-center space-x-3 cursor-pointer'>
                             {
                                 userData?.profile_picture &&
-                                <img src={userData?.profile_picture} style={{borderRadius: 17.5, width: 35, height: 35}} alt='Profile_image' className='rounded-full ms-3' />
+                                <img src={userData?.profile_picture} style={{ borderRadius: 17.5, width: 35, height: 35 }} alt='Profile_image' className='rounded-full ms-3' />
                             }
                             <div>
                                 <p className='text-[14px] text-[#404040] font-semibold -mb-1 leading-tight'>{userData?.business_name}</p>

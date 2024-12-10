@@ -1,5 +1,6 @@
 "use client"
 import Nav from '@/components/Nav.tsx'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { FaFacebookF } from 'react-icons/fa'
@@ -63,35 +64,35 @@ function Settings() {
                     <p className="block text-[12px] text-[#5e6366] mb-1 ">Link your social profiles</p>
 
                     {/* Social Links */}
-                    <div className="space-y-4">
+                    <div className="space-y-4 mt-3">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-6 h-6 rounded-full flex items-center justify-center">
-                                <FaFacebookF size={18} color='blue' />
+                                <div className="p-2 border border-[#979797] rounded flex items-center justify-center">
+                                    <FaFacebookF size={18} color='blue' />
                                 </div>
                                 <span className="text-gray-800">Facebook</span>
                             </div>
-                            <button className="text-sm text-purple-600 font-medium">Connect</button>
+                            <button className="text-sm text-[#AF52DE] font-medium">Connect</button>
                         </div>
 
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-6 h-6 bg-pink-500 rounded-full flex items-center justify-center">
-                                    <span className="text-white text-sm font-bold">I</span>
+                                <div className="p-2 border border-[#979797] rounded flex items-center justify-center">
+                                    <Image src={"/images/instagram.png"} alt='instagram' height={20} width={20} />
                                 </div>
                                 <span className="text-gray-800">Instagram</span>
                             </div>
-                            <button className="text-sm text-purple-600 font-medium">Connect</button>
+                            <button className="text-sm text-[#AF52DE] font-medium">Connect</button>
                         </div>
 
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                                    <span className="text-white text-sm font-bold">X</span>
+                                <div className="p-2 border border-[#979797] rounded flex items-center justify-center">
+                                    <Image src={"/images/x.png"} alt='instagram' height={20} width={20} />
                                 </div>
                                 <span className="text-gray-800">X fka (Twitter)</span>
                             </div>
-                            <button className="text-sm text-purple-600 font-medium">Connect</button>
+                            <button className="text-sm text-[#AF52DE] font-medium">Connect</button>
                         </div>
                     </div>
                 </div>
@@ -99,7 +100,7 @@ function Settings() {
                 {/* Action Buttons */}
                 <div className="flex justify-end mt-6">
                     <button className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg mr-3">Cancel</button>
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg">Save</button>
+                    <button className="px-4 py-2 bg-[#6366F1] text-white rounded-lg">Save</button>
                 </div>
             </div>
         </div>

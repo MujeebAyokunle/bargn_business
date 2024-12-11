@@ -11,6 +11,8 @@ function Profile() {
     const { userData } = useAppSelector(data => data.business)
     const profileImageRef = useRef<any>()
 
+    console.log({ userData })
+
     const [editing, setEditing] = useState(false)
     const [formData, setFormData] = useState({
         businessName: "Hideout Villas",
@@ -303,7 +305,7 @@ function Profile() {
                                     <h2 className="text-lg text-black font-semibold mb-4">Business Profile</h2>
                                     <div className="mb-4">
                                         <p className="text-[#979797] text-[16px] font-medium">Business Name</p>
-                                        <p className="text-black font-normal text-base">Hideout Villa</p>
+                                        <p className="text-black font-normal text-base">{userData?.business_name}</p>
                                     </div>
                                     <div>
                                         <p className="text-[#979797] text-[16px] font-medium">About us</p>
@@ -320,11 +322,11 @@ function Profile() {
                                         {/* Left Column */}
                                         <div>
                                             <p className="text-[#979797] text-[16px] font-medium">Email</p>
-                                            <p className="text-black text-base font-medium">sales@hideoutvillas.com</p>
+                                            <p className="text-black text-base font-medium">{userData?.business_email}</p>
                                         </div>
                                         <div>
                                             <p className="text-[#979797] text-[16px] font-medium">Phone Number</p>
-                                            <p className="text-black text-base font-medium">+358-402345678</p>
+                                            <p className="text-black text-base font-medium">+{userData?.phone_country_code}-{userData?.phone_number}</p>
                                         </div>
                                         <div>
                                             <p className="text-[#979797] text-[16px] font-medium">Street Address</p>
@@ -334,7 +336,7 @@ function Profile() {
                                             <p className="text-[#979797] text-[16px] font-medium">Website URL</p>
                                             <p className="text-black text-base font-medium">
                                                 <a href="https://hideoutvillas.com/" target="_blank" rel="noopener noreferrer" className="text-black">
-                                                    https://hideoutvillas.com/
+                                                    {userData?.website}
                                                 </a>
                                             </p>
                                         </div>
@@ -344,11 +346,11 @@ function Profile() {
                                         </div>
                                         <div>
                                             <p className="text-[#979797] text-[16px] font-medium">Business Category</p>
-                                            <p className="text-black text-base font-medium">Hotel & Travels</p>
+                                            <p className="text-black text-base font-medium">{userData?.business_category}</p>
                                         </div>
                                         <div>
                                             <p className="text-[#979797] text-[16px] font-medium">Business ID number</p>
-                                            <p className="text-black text-base font-medium">1234567-8</p>
+                                            <p className="text-black text-base font-medium">{userData?.business_id}</p>
                                         </div>
                                         <div>
                                             <p className="text-[#979797] text-[16px] font-medium">State Province</p>

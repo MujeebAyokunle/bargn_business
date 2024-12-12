@@ -167,8 +167,7 @@ function Settings() {
             console.log(errors); // Display errors
             return
         }
-        console.log({ errors })
-        console.log("loading")
+        
         setResetLoading(true)
 
         let json = {

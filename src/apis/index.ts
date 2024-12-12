@@ -24,8 +24,6 @@ export const signInApi = async (json: signinDataTypes, cb: (param: any) => void)
 
         const token = response.data.token;
 
-        console.log({ token })
-
         localStorage.setItem("authToken", token);
 
         Cookies.set('token', token, { expires: 7, path: '/' });
@@ -35,7 +33,8 @@ export const signInApi = async (json: signinDataTypes, cb: (param: any) => void)
         cb(response?.data || response)
     } catch (error: any) {
         console.log("error", error?.response?.data)
-        cb(error.response.data)
+
+        cb(error?.response?.data || error?.message)
     }
 }
 
@@ -174,6 +173,38 @@ export const getCoordinateApi = async (place_id: string, cb: (param: any) => voi
         cb(response?.data || response)
     } catch (error: any) {
         console.log("get coordinate error", error.message)
+        return {
+            error: true,
+            message: error?.response?.data
+        }
+    }
+}
+
+export const getchRedeemedDeals = async (page_number: number, cb: (param: any) => void) => {
+    try {
+        const response = await axiosInstance.get("/business/redeemeddeals", {
+            params: {
+                page_number
+            }
+        })
+
+        cb(response?.data || response)
+    } catch (error: any) {
+        console.log("get coordinate error", error.message)
+        return {
+            error: true,
+            message: error?.response?.data
+        }
+    }
+}
+
+export const fetchBusinessDetails = async (cb: (param: any) => void) => {
+    try {
+        const response = await axiosInstance.get("/business/details")
+
+        cb(response?.data || response)
+    } catch (error: any) {
+        console.log("get business details error", error.message)
         return {
             error: true,
             message: error?.response?.data

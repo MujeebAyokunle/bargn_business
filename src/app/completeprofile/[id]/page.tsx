@@ -516,7 +516,7 @@ function CompleteProfile() {
                                         <div className="grid grid-cols-1">
                                             <div>
                                                 <label className="block text-sm font-medium text-[#5E6366] text-[15px]">Write a bio</label>
-                                                <textarea name="bio" placeholder="00170" onChange={(value) => {
+                                                <textarea name="bio" onChange={(value) => {
                                                     setFieldValue("bio", value.target.value)
                                                 }} className="mt-1 w-full px-3 py-2 text-black border rounded-md min-h-[200px] shadow-sm border-[#5E6366] focus:outline-none focus:ring-none focus:ring-[#5E6366]" />
                                             </div>

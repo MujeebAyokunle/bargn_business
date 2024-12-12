@@ -1,7 +1,6 @@
 "use client"
 import CustomSwitch from '@/components/CustomSwitch'
 import Modal from '@/components/Modal'
-import Nav from '@/components/Nav.tsx'
 import { useAppSelector } from '@/lib/hooks'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -13,6 +12,7 @@ import { IoEyeOutline } from 'react-icons/io5'
 function Settings() {
 
     const { userData } = useAppSelector(data => data.business)
+    const router = useRouter()
 
     // states
     const [messageNotification, setMessageNotification] = useState(false)

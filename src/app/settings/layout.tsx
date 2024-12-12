@@ -1,7 +1,8 @@
 "use client"
 import Nav from '@/components/Nav.tsx'
 import { usePathname, useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useEffect } from 'react'
+import Cookies from 'js-cookie';
 
 function layout({ children }: any) {
 
@@ -11,6 +12,14 @@ function layout({ children }: any) {
     const navigateFunc = (url: string) => {
         router.push(url)
     }
+
+    useEffect(() => {
+        const cookie = Cookies.get("token")
+        if (!cookie) {
+            router.push("/")
+            return
+        }
+    }, [])
 
     return (
         <Nav >

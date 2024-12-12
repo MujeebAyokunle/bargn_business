@@ -16,37 +16,6 @@ import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 
 
-const statusStyles: any = {
-    Completed: "bg-[#F0FDF4] text-[#22c55e]",
-    Processing: "bg-[#FFFBEB] text-[#F59E0B]",
-    Shipping: "bg-[#EEF2FF] text-[#6366F1]",
-};
-
-const data2 = [
-    {
-        order: "03-495837521",
-        deal: "Skiing and Snowboarding",
-        amount: "€170.00",
-        status: "Completed",
-        image: "https://via.placeholder.com/40", // Replace with actual image URL
-    },
-    {
-        order: "03-495837522",
-        deal: "Northern Lights Hunting",
-        amount: "€140.90",
-        status: "Processing",
-        image: "https://via.placeholder.com/40",
-    },
-    {
-        order: "03-495837523",
-        deal: "Snowmobiling",
-        amount: "€120.00",
-        status: "Shipping",
-        image: "https://via.placeholder.com/40",
-    },
-    // Add more rows as needed
-];
-
 const options = {
     cutout: "70%", // Creates the donut effect
     plugins: {
@@ -71,8 +40,6 @@ function Dashboard() {
     const { dashboardData, dashboardSales } = useSelector((data: RootState) => data.dashboard)
 
     const [pageNumber, setPageNumber] = useState(1)
-
-    // console.log(dashboardData)
 
     useEffect(() => {
 

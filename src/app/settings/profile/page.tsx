@@ -1,7 +1,6 @@
 "use client"
 import 'react-phone-input-2/lib/style.css'
 import { useAppSelector } from '@/lib/hooks';
-import Image from 'next/image';
 import React, { useRef, useState } from 'react'
 import { MdOutlineModeEdit } from 'react-icons/md';
 import PhoneInput from 'react-phone-input-2';
@@ -10,8 +9,6 @@ function Profile() {
 
     const { userData } = useAppSelector(data => data.business)
     const profileImageRef = useRef<any>()
-
-    console.log({ userData })
 
     const [editing, setEditing] = useState(false)
     const [formData, setFormData] = useState({

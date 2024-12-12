@@ -1,45 +1,45 @@
 "use client"
+import { getchRedeemedDeals } from '@/apis';
 import Nav from '@/components/Nav.tsx'
 import { getPages } from '@/helper/functions';
-import React, { useState } from 'react'
+import moment from 'moment';
+import React, { useEffect, useState } from 'react'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { IoIosSearch } from 'react-icons/io';
 import { IoEllipsisVertical } from 'react-icons/io5';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
 
 function Managedeals() {
 
+    const router = useRouter()
+
     const [pageNumber, setPageNumber] = useState(1);
     const [totalPages, setTotalPages] = useState<number>(1)
+    const [redeemedDeals, setRedeemedDeals] = useState<any>([])
 
-    const deals = [
-        {
-            id: "#2547",
-            name: "Skiing and Snowboarding",
-            date: "12-11-2024",
-            status: "Redeemed",
-            amount: "€170.00",
-            location: "Helsinki",
-        },
-        {
-            id: "#2547",
-            name: "Northern Lights Hunting",
-            date: "12-10-2024",
-            status: "Completed",
-            amount: "€140.90",
-            location: "Rovaniemi",
-        },
-        {
-            id: "#2547",
-            name: "Snowmobiling",
-            date: "14-09-2024",
-            status: "Expired",
-            amount: "€140.90",
-            location: "Kuopio",
-        },
-        // Add other deals here
-    ];
+    useEffect(() => {
+
+        const cookie = Cookies.get("token")
+        if (!cookie) {
+            router.push("/")
+            return
+        }
+    }, [])
+
+    useEffect(() => {
+        initialize()
+    }, [pageNumber])
 
     const onPageChange = (page: number) => setPageNumber(page)
+
+    const initialize = async () => {
+        getchRedeemedDeals(pageNumber, response => {
+
+            setRedeemedDeals(response?.redeemed_deals)
+            setTotalPages(response?.totalSalesPages)
+        })
+    }
 
     return (
         <Nav>
@@ -84,14 +84,14 @@ function Managedeals() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {deals.map((deal, index) => (
+                                {redeemedDeals?.map((deal: any, index: number) => (
                                     <tr
                                         key={index}
                                         className="border-b hover:bg-gray-100 transition duration-200"
                                     >
-                                        <td className="px-6 py-4 text-sm text-gray-800">{deal.id}</td>
-                                        <td className="px-6 py-4 text-sm text-gray-800">{deal.name}</td>
-                                        <td className="px-6 py-4 text-sm text-gray-800">{deal.date}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-800">{deal.order_id}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-800">{deal?.deal?.name}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-800">{moment(deal.createdAt).format("dd-mm-yyy")}</td>
                                         <td className="px-6 py-4 text-sm flex items-center space-x-1">
                                             <div style={{ width: 6, height: 6, borderRadius: 3 }} className={`${deal.status === "Redeemed"
                                                 ? "bg-green-500"
@@ -103,7 +103,7 @@ function Managedeals() {
                                                 {deal.status}
                                             </p>
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-gray-800">{deal.amount}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-800">€{deal.revenue}</td>
                                         <td className="px-6 py-4 text-sm text-gray-800">{deal.location}</td>
                                         <td className="px-6 py-4 text-sm text-gray-800">
                                             <button className="text-gray-500 hover:text-gray-700">

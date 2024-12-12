@@ -1,15 +1,16 @@
 "use client"
 import { signInApi } from "@/apis";
 import ActivityLoader from "@/components/ActivityLoader";
-import { errorToast, successToast } from "@/helper/functions";
+import { errorToast, infoToast, successToast } from "@/helper/functions";
 import { setUserData } from "@/lib/features/businessSlice";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiEyeOff } from "react-icons/fi";
 import { IoEyeOutline } from "react-icons/io5";
 import { useDispatch } from "react-redux";
+import Cookies from 'js-cookie';
 
 export default function Home() {
 
@@ -19,6 +20,20 @@ export default function Home() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+
+  useEffect(() => {
+    initialize()
+  }, [])
+
+  const initialize = () => {
+    let remember = Cookies.get('rememberMe')
+    let token = Cookies.get('token')
+    
+    if (remember == "true" && token) {
+      router.push("/dashboard")
+    }
+  }
 
   const signIn = async (e: any) => {
     e.preventDefault()
@@ -33,10 +48,18 @@ export default function Home() {
       setLoading(false)
 
       if (!response?.error) {
-        successToast(response?.message)
-        
-        dispatch(setUserData(response?.admin))
-        router.push("/dashboard")
+
+        if (response?.verified) {
+          successToast(response?.message)
+          dispatch(setUserData(response?.admin))
+
+          Cookies.set('rememberMe', JSON.stringify(rememberMe), { expires: 30, path: '/' });
+
+          router.push("/dashboard")
+        } else {
+          infoToast(response?.message)
+        }
+
       } else {
         errorToast(response?.message)
       }
@@ -105,8 +128,8 @@ export default function Home() {
 
           <div className="flex items-center justify-between mb-6">
             <label className="flex items-center">
-              <input type="checkbox" className="form-checkbox text-indigo-500" />
-              <span className="ml-2 text-sm text-gray-700">Remember me</span>
+              <input type="checkbox" onChange={(value) => setRememberMe(value.target.checked)} className="form-checkbox text-indigo-500" />
+              <span className="ml-2 cursor-pointer text-sm text-gray-700">Remember me</span>
             </label>
             <Link href="/forgotpassword" className="text-sm text-[#EC221F] hover:underline">Forgot Password?</Link>
           </div>

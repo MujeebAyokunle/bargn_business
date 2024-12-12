@@ -1,10 +1,12 @@
 "use client"
-import { fetchBusinessDetails, UpdateLanguageApi, UpdateMessageNotificationApi } from '@/apis'
+import { fetchBusinessDetails, resetPasswordAPI, sendOTPApi, UpdateLanguageApi, UpdateMessageNotificationApi } from '@/apis'
+import ActivityLoader from '@/components/ActivityLoader'
 import CustomSwitch from '@/components/CustomSwitch'
 import Modal from '@/components/Modal'
-import { errorToast, successToast } from '@/helper/functions'
+import { errorToast, successToast, validateEmail } from '@/helper/functions'
 import { updateNotificationMode } from '@/lib/features/businessSlice'
 import { useAppSelector } from '@/lib/hooks'
+import { channel } from 'diagnostics_channel'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { FaFacebookF } from 'react-icons/fa'
@@ -21,14 +23,18 @@ function Settings() {
     const [messageNotification, setMessageNotification] = useState(false)
     const [emailNotification, setEmailNotification] = useState(false)
     const [emailEror, setEmailError] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [email, setEmail] = useState("")
     const [openEmailModal, setOpenEmailModal] = useState(false)
     const [openPasswordResetModal, setOpenPasswordResetModal] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
+    const [resetLoading, setResetLoading] = useState(false)
     const [confirmError, setConfirmError] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const [openResetSuccessfulModal, setOpenResetSuccessfulModal] = useState(false)
     const [newPassword, setNewPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
+    const [otp, setOtp] = useState("")
 
     useEffect(() => {
         setEmailNotification(businessDetails?.email_notification == "true")
@@ -68,6 +74,7 @@ function Settings() {
         })
     }
 
+    // Update language
     const updateLanguage = (event: any) => {
 
         let json = {
@@ -75,7 +82,7 @@ function Settings() {
         }
 
         UpdateLanguageApi(json, response => {
-            
+
             if (!response.error) {
                 successToast(response?.message)
 
@@ -84,6 +91,102 @@ function Settings() {
                     value: event.target.value
                 }
                 dispatch(updateNotificationMode(json))
+            } else {
+                errorToast(response?.message)
+            }
+        })
+    }
+
+    // Send change Password OTP
+    const sendPasswordOTP = async () => {
+
+        const error = validateEmail(email);
+
+        if (error) {
+            setEmailError(true)
+            return
+        }
+
+        if (email !== businessDetails?.business_email) {
+            errorToast("Invalid business email")
+            return
+        }
+        setLoading(true)
+        let json = {
+            channel: "email",
+            email
+        }
+
+        sendOTPApi(json, response => {
+            setLoading(false)
+
+            if (!response?.error) {
+                successToast(response?.message)
+                setOpenEmailModal(false)
+                setOpenPasswordResetModal(true)
+            } else {
+                errorToast(response?.message)
+            }
+        })
+    }
+
+    // resetPassword
+    const resetPasswordFunc = () => {
+        let errors: any = {};
+
+        // Validate OTP
+        if (!otp.trim()) {
+            errors.otp = "OTP is required.";
+        } else if (otp.length !== 4) {
+            errors.otp = "Invalid OTP. It must be a 4-digit number.";
+        }
+
+        // Validate new password
+        if (!newPassword.trim()) {
+            errors.newPassword = "New password is required.";
+        } else if (newPassword.length < 8) {
+            errors.newPassword = "Password must be at least 8 characters long.";
+        } else if (!/[A-Z]/.test(newPassword)) {
+            errors.newPassword = "Password must contain at least one capital letter.";
+        } else if (!/\d/.test(newPassword)) {
+            errors.newPassword = "Password must contain at least one number.";
+        } else if (!/[!@#$%^&*]/.test(newPassword)) {
+            errors.newPassword = "Password must contain at least one special character.";
+        }
+
+        // Validate confirm password
+        if (!confirmPassword.trim()) {
+            errors.confirmPassword = "Confirm password is required.";
+        } else if (newPassword !== confirmPassword) {
+            errors.confirmPassword = "Passwords do not match.";
+        }
+
+        // Set errors or submit
+        if (Object.keys(errors).length > 0) {
+            setConfirmError(errors.confirmPassword ? true : false);
+            console.log(errors); // Display errors
+            return
+        }
+        console.log({ errors })
+        console.log("loading")
+        setResetLoading(true)
+
+        let json = {
+            newPassword,
+            token: otp,
+            email
+        }
+
+        resetPasswordAPI(json, response => {
+            setResetLoading(false)
+            if (!response?.error) {
+                setEmail("")
+                setOtp("")
+                setNewPassword("")
+                setConfirmPassword("")
+                successToast(response?.message)
+                setOpenPasswordResetModal(false)
+                setOpenResetSuccessfulModal(true)
             } else {
                 errorToast(response?.message)
             }
@@ -221,7 +324,10 @@ function Settings() {
             {/* Email modal */}
             {
                 openEmailModal && (
-                    <Modal close={() => setOpenEmailModal(false)} >
+                    <Modal close={() => {
+                        setEmailError(false)
+                        setOpenEmailModal(false)
+                    }} >
                         <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                             <div className="sm:flex sm:items-start">
                                 <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
@@ -232,15 +338,36 @@ function Settings() {
 
                                     <div className='my-4' >
                                         <p className='text-[#757575] font-normal text-[12px]' >Business Email</p>
-                                        <input type="email" className={`border ${emailEror ? "border-[#F75351]" : "border-[#757575]"} rounded-md w-full p-2 my-1 text-base text-black focus:outline-none`} />
+                                        <input onBlur={(event) => {
+                                            let validate = validateEmail(event.target.value)
+
+                                            if (validate) { setEmailError(true) } else setEmailError(false)
+                                        }} onChange={(e) => {
+                                            const { value } = e.target;
+                                            setEmail(value);
+                                        }} type="email" className={`border ${emailEror ? "border-[#F75351]" : "border-[#757575]"} rounded-md w-full p-2 my-1 text-base text-black focus:outline-none`} />
                                         {
                                             emailEror &&
-                                            <p className='text-[#F75351] font-normal text-[12px]' >Email not found, please check the email.</p>
+                                            <p className='text-[#F75351] font-normal text-[12px]' >Invalid email, please check the email.</p>
                                         }
                                     </div>
 
                                     {/* Submit button */}
-                                    <button type="submit" style={{ width: "100%", marginTop: 20 }} className="mb-3 mt-10 w-full justify-center rounded-md bg-[#D9D9D9] px-3 py-2 text-sm font-semibold text-[#B3B3B3] shadow-sm ring-1 ring-inset ring-gray-300 sm:mt-0 sm:w-auto">Send OTP</button>
+                                    <button onClick={() => {
+                                        let validate = validateEmail(email)
+
+                                        if (!validate) {
+                                            sendPasswordOTP()
+                                        }
+
+                                    }} type="submit" style={{ width: "100%", marginTop: 20 }} className={`mb-3 mt-10 w-full justify-center rounded-md ${email && !validateEmail(email) ? "bg-[#000]" : "bg-[#D9D9D9]"} px-3 py-3 text-sm font-semibold ${email && !validateEmail(email) ? "text-[#fff]" : "text-[#B3B3B3]"} shadow-sm ring-1 ring-inset ring-gray-300 sm:mt-0 sm:w-auto`}>
+                                        {
+                                            loading ?
+                                                <ActivityLoader />
+                                                : "Send OTP"
+                                        }
+
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -258,6 +385,20 @@ function Settings() {
                                     <h3 className="text-[24px] text-center font-semibold text-[#1e1e1e]" id="modal-title">Reset Password</h3>
 
                                     <div className='my-4' >
+                                        <p className='text-[#757575] font-normal text-[12px]' >Enter OTP</p>
+                                        <div className="relative my-2">
+                                            <input
+                                                type="text"
+                                                value={otp}
+                                                onChange={(e) => setOtp(e.target.value)}
+                                                className="w-full px-4 py-2 text-black border border-[#757575] rounded-md focus:outline-none focus:ring-2 focus:none"
+                                            />
+
+                                            <div className='flex justify-end items-end mt-2' >
+                                                <p className='cursor-pointer text-[12px] text-blue-500' onClick={sendPasswordOTP} >Resend OTP</p>
+                                            </div>
+                                        </div>
+
                                         <p className='text-[#757575] font-normal text-[12px]' >Enter new password</p>
                                         <div className="relative my-2">
                                             <input
@@ -305,7 +446,12 @@ function Settings() {
                                     </div>
 
                                     {/* Submit button */}
-                                    <button type="submit" style={{ width: "100%", marginTop: 20 }} className="mb-3 mt-10 w-full justify-center rounded-md bg-[#D9D9D9] px-3 py-2 text-sm font-semibold text-[#B3B3B3] shadow-sm ring-1 ring-inset ring-gray-300 sm:mt-0 sm:w-auto">Reset Password</button>
+                                    <button onClick={resetPasswordFunc} type="submit" style={{ width: "100%", marginTop: 20 }} className="mb-3 mt-10 w-full justify-center rounded-md bg-[#000] px-3 py-3 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 sm:mt-0 sm:w-auto">
+                                        {
+                                            resetLoading ? <ActivityLoader />
+                                                : "Reset Password"
+                                        }
+                                    </button>
                                 </div>
                             </div>
                         </div>

@@ -70,3 +70,14 @@ export const toTitleCase = (str: string) => {
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
 }
+
+export const validateEmail = (value: string) => {
+    // Regular expression to validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!value) {
+        return "Email is required.";
+    } else if (!emailRegex.test(value)) {
+        return "Invalid email format.";
+    }
+    return "";
+};

@@ -92,7 +92,7 @@ function Managedeals() {
                                     <th className="px-6 py-4 text-sm font-medium text-gray-600">Redemption ID</th>
                                     <th className="px-6 py-4 text-sm font-medium text-gray-600">Deals</th>
                                     <th className="px-6 py-4 text-sm font-medium text-gray-600">Date</th>
-                                    <th className="px-6 py-4 text-sm font-medium text-gray-600">Deal Status</th>
+                                    {/* <th className="px-6 py-4 text-sm font-medium text-gray-600">Deal Status</th> */}
                                     <th className="px-6 py-4 text-sm font-medium text-gray-600">Amount</th>
                                     <th className="px-6 py-4 text-sm font-medium text-gray-600">Location</th>
                                     <th className="px-6 py-4 text-sm font-medium text-gray-600">Action</th>
@@ -107,7 +107,7 @@ function Managedeals() {
                                         <td className="px-6 py-4 text-sm text-gray-800">{deal.order_id}</td>
                                         <td className="px-6 py-4 text-sm text-gray-800">{deal?.deal?.name}</td>
                                         <td className="px-6 py-4 text-sm text-gray-800">{moment(deal.createdAt).format("dd-mm-yyy")}</td>
-                                        <td className="px-6 py-4 text-sm flex items-center space-x-1">
+                                        {/* <td className="px-6 py-4 text-sm flex items-center space-x-1">
                                             <div style={{ width: 6, height: 6, borderRadius: 3 }} className={`${deal.status === "Redeemed"
                                                 ? "bg-green-500"
                                                 : deal.status === "Completed"
@@ -117,7 +117,7 @@ function Managedeals() {
                                             <p className='text-black'>
                                                 {deal.status}
                                             </p>
-                                        </td>
+                                        </td> */}
                                         <td className="px-6 py-4 text-sm text-gray-800">€{deal.revenue}</td>
                                         <td className="px-6 py-4 text-sm text-gray-800">{deal.location}</td>
                                         <td className="px-6 py-4 text-sm text-gray-800">

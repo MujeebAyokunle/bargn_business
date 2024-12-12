@@ -237,3 +237,31 @@ export const UpdateLanguageApi = async (json: { language: string }, cb: (param: 
         }
     }
 }
+
+export const sendOTPApi = async (json: { channel: string, email: string }, cb: (param: any) => void) => {
+    try {
+        const response = await axiosInstance.post("/business/sendotp", json)
+
+        cb(response?.data || response)
+    } catch (error: any) {
+        console.log("update language error", error.message)
+        return {
+            error: true,
+            message: error?.response?.data
+        }
+    }
+}
+
+export const resetPasswordAPI = async (json: { newPassword: string, token: string, email: string }, cb: (param: any) => void) => {
+    try {
+        const response = await axiosInstance.post("/business/resetpassword", json)
+
+        cb(response?.data || response)
+    } catch (error: any) {
+        console.log("reset password error", error.message)
+        return {
+            error: true,
+            message: error?.response?.data
+        }
+    }
+}

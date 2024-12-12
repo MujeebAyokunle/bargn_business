@@ -49,6 +49,7 @@ function Nav({ children }: NavProps) {
     const logout = () => {
         localStorage.clear()
         Cookies.remove("token")
+        Cookies.remove("rememberMe")
         setOpenOptions(false)
         router.push("/")
     }
@@ -129,7 +130,7 @@ function Nav({ children }: NavProps) {
                                     <AiOutlineQuestionCircle size={22} />
                                     <span>Help & Support</span>
                                 </li>
-                                <li className="flex items-center space-x-3 text-gray-700 text-[14px] hover:text-black">
+                                <li onClick={logout} className="flex cursor-pointer items-center space-x-3 text-gray-700 text-[14px] hover:text-black">
                                     <Logout />
                                     <span>Log Out</span>
                                 </li>

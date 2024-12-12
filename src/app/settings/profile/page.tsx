@@ -7,8 +7,10 @@ import PhoneInput from 'react-phone-input-2';
 
 function Profile() {
 
-    const { userData } = useAppSelector(data => data.business)
+    const { userData, businessDetails } = useAppSelector(data => data.business)
     const profileImageRef = useRef<any>()
+
+    console.log({ businessDetails })
 
     const [editing, setEditing] = useState(false)
     const [formData, setFormData] = useState({
@@ -302,12 +304,12 @@ function Profile() {
                                     <h2 className="text-lg text-black font-semibold mb-4">Business Profile</h2>
                                     <div className="mb-4">
                                         <p className="text-[#979797] text-[16px] font-medium">Business Name</p>
-                                        <p className="text-black font-normal text-base">{userData?.business_name}</p>
+                                        <p className="text-black font-normal text-base">{businessDetails?.business_name}</p>
                                     </div>
                                     <div>
                                         <p className="text-[#979797] text-[16px] font-medium">About us</p>
                                         <p className="text-black text-base font-normal leading-relaxed">
-                                            <span className="font-semibold">Hideout Villa</span> is your ultimate gateway to affordable luxury, specializing in exclusive discounts on hotels, vacations, lifestyle, and entertainment services. Whether you're planning a relaxing getaway, an adventurous trip, or indulging in premium lifestyle experiences, Hideout Villa connects you with unbeatable deals to make every moment memorable without breaking the bank.
+                                            {businessDetails?.about}
                                         </p>
                                     </div>
                                 </div>
@@ -319,47 +321,47 @@ function Profile() {
                                         {/* Left Column */}
                                         <div>
                                             <p className="text-[#979797] text-[16px] font-medium">Email</p>
-                                            <p className="text-black text-base font-medium">{userData?.business_email}</p>
+                                            <p className="text-black text-base font-medium">{businessDetails?.business_email}</p>
                                         </div>
                                         <div>
                                             <p className="text-[#979797] text-[16px] font-medium">Phone Number</p>
-                                            <p className="text-black text-base font-medium">+{userData?.phone_country_code}-{userData?.phone_number}</p>
+                                            <p className="text-black text-base font-medium">+{businessDetails?.phone_country_code}-{businessDetails?.phone_number}</p>
                                         </div>
                                         <div>
                                             <p className="text-[#979797] text-[16px] font-medium">Street Address</p>
-                                            <p className="text-black text-base font-medium">Meritullinkatu 33, 00170 Helsinki</p>
+                                            <p className="text-black text-base font-medium">{businessDetails?.street_address}</p>
                                         </div>
                                         <div>
                                             <p className="text-[#979797] text-[16px] font-medium">Website URL</p>
                                             <p className="text-black text-base font-medium">
                                                 <a href="https://hideoutvillas.com/" target="_blank" rel="noopener noreferrer" className="text-black">
-                                                    {userData?.website}
+                                                    {businessDetails?.website}
                                                 </a>
                                             </p>
                                         </div>
                                         <div>
                                             <p className="text-[#979797] text-[16px] font-medium">Country</p>
-                                            <p className="text-black text-base font-medium">Finland</p>
+                                            <p className="text-black text-base font-medium">{businessDetails?.country}</p>
                                         </div>
                                         <div>
                                             <p className="text-[#979797] text-[16px] font-medium">Business Category</p>
-                                            <p className="text-black text-base font-medium">{userData?.business_category}</p>
+                                            <p className="text-black text-base font-medium">{businessDetails?.business_category}</p>
                                         </div>
                                         <div>
                                             <p className="text-[#979797] text-[16px] font-medium">Business ID number</p>
-                                            <p className="text-black text-base font-medium">{userData?.business_id}</p>
+                                            <p className="text-black text-base font-medium">{businessDetails?.business_id}</p>
                                         </div>
                                         <div>
                                             <p className="text-[#979797] text-[16px] font-medium">State Province</p>
-                                            <p className="text-black text-base font-medium">Helsinki</p>
+                                            <p className="text-black text-base font-medium">{businessDetails?.state}</p>
                                         </div>
                                         <div>
                                             <p className="text-[#979797] text-[16px] font-medium">City</p>
-                                            <p className="text-black text-base font-medium">Helsinki</p>
+                                            <p className="text-black text-base font-medium">{businessDetails?.city}</p>
                                         </div>
                                         <div>
                                             <p className="text-[#979797] text-[16px] font-medium">Postal Code</p>
-                                            <p className="text-black text-base font-medium">00170</p>
+                                            <p className="text-black text-base font-medium">{businessDetails?.postal_code}</p>
                                         </div>
                                     </div>
                                 </div>

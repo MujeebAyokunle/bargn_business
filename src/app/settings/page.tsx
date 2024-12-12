@@ -1,18 +1,21 @@
 "use client"
+import { fetchBusinessDetails, UpdateLanguageApi, UpdateMessageNotificationApi } from '@/apis'
 import CustomSwitch from '@/components/CustomSwitch'
 import Modal from '@/components/Modal'
+import { errorToast, successToast } from '@/helper/functions'
+import { updateNotificationMode } from '@/lib/features/businessSlice'
 import { useAppSelector } from '@/lib/hooks'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaFacebookF } from 'react-icons/fa'
 import { FiEyeOff } from 'react-icons/fi'
 import { IoEyeOutline } from 'react-icons/io5'
+import { useDispatch } from 'react-redux'
 
 function Settings() {
 
-    const { userData } = useAppSelector(data => data.business)
-    const router = useRouter()
+    const dispatch: any = useDispatch()
+    const { businessDetails } = useAppSelector((data: any) => data.business)
 
     // states
     const [messageNotification, setMessageNotification] = useState(false)
@@ -26,6 +29,66 @@ function Settings() {
     const [openResetSuccessfulModal, setOpenResetSuccessfulModal] = useState(false)
     const [newPassword, setNewPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
+
+    useEffect(() => {
+        setEmailNotification(businessDetails?.email_notification == "true")
+        setMessageNotification(businessDetails?.text_notification == "true")
+    }, [businessDetails])
+
+    const setMessageNotApi = (value: boolean, method: string) => {
+        if (method == "text_notification") {
+            setMessageNotification(value)
+        } else {
+            setEmailNotification(value)
+        }
+
+        let json = {
+            value,
+            notification_medium: method
+        }
+
+        UpdateMessageNotificationApi(json, response => {
+
+            if (!response.error) {
+                successToast(response?.message)
+
+                let json = {
+                    notification_method: method,
+                    value
+                }
+                dispatch(updateNotificationMode(json))
+            } else {
+                errorToast(response?.message)
+                if (method == "text_notification") {
+                    setMessageNotification(!value)
+                } else {
+                    setEmailNotification(!value)
+                }
+            }
+        })
+    }
+
+    const updateLanguage = (event: any) => {
+
+        let json = {
+            language: event.target.value
+        }
+
+        UpdateLanguageApi(json, response => {
+            
+            if (!response.error) {
+                successToast(response?.message)
+
+                let json = {
+                    notification_method: "language",
+                    value: event.target.value
+                }
+                dispatch(updateNotificationMode(json))
+            } else {
+                errorToast(response?.message)
+            }
+        })
+    }
 
     return (
         <div className='mx-4 my-12' >
@@ -53,8 +116,9 @@ function Settings() {
                 <div className="mb-6 border border-[#979797] rounded-lg p-4">
                     <h3 className="text-[20px] text-black font-medium mb-2">Language</h3>
                     <label className="block text-[12px] text-[#5e6366] mb-1 ">Choose Language</label>
-                    <select className="w-full text-black text-[16px] border border-[#979797] focus:outline-none rounded-lg px-3 py-2">
-                        <option>English</option>
+                    <select value={businessDetails?.language} onChange={updateLanguage} className="w-full text-black text-[16px] border border-[#979797] focus:outline-none rounded-lg px-3 py-2">
+                        <option value={"english"}>English</option>
+                        <option value={"finnish"}>Finnish</option>
                         {/* Add more options as needed */}
                     </select>
                 </div>
@@ -72,9 +136,9 @@ function Settings() {
                         <div className='w-full'>
                             <label className="font-medium text-[16px] text-[#2c2c2c] mb-1 ">Text Messages</label>
                             <div className="w-full flex items-center justify-between border border-gray-300 rounded-lg px-3 py-2 mt-1" >
-                                <p className='text-[#5E6366] font-normal text-[16px]' >+{userData?.phone_country_code}-{userData?.phone_number}</p>
+                                <p className='text-[#5E6366] font-normal text-[16px]' >+{businessDetails?.phone_country_code}-{businessDetails?.phone_number}</p>
 
-                                <CustomSwitch onToggle={(val: boolean) => setMessageNotification(val)} isOn={messageNotification} />
+                                <CustomSwitch onToggle={(val: boolean) => setMessageNotApi(val, "text_notification")} isOn={messageNotification} />
                             </div>
 
                         </div>
@@ -85,9 +149,9 @@ function Settings() {
                         <div className='w-full'>
                             <label className="font-medium text-[16px] text-[#2c2c2c] mb-1 ">Email Address</label>
                             <div className="w-full flex items-center justify-between border border-gray-300 rounded-lg px-3 py-2 mt-1" >
-                                <p className='text-[#5E6366] font-normal text-[16px]' >{userData?.business_email}</p>
+                                <p className='text-[#5E6366] font-normal text-[16px]' >{businessDetails?.business_email}</p>
 
-                                <CustomSwitch onToggle={(val: boolean) => setEmailNotification(val)} isOn={emailNotification} />
+                                <CustomSwitch onToggle={(val: boolean) => setMessageNotApi(val, "email_notification")} isOn={emailNotification} />
                             </div>
                         </div>
                     </div>
@@ -107,7 +171,13 @@ function Settings() {
                                 </div>
                                 <span className="text-gray-800">Facebook</span>
                             </div>
-                            <button className="text-sm text-[#AF52DE] font-medium">Connect</button>
+                            {
+                                businessDetails?.fecebook ? (
+                                    <p className='text-[#AF52DE] text-sm' >{businessDetails?.facebook}</p>
+                                ) : (
+                                    <button className="text-sm text-[#AF52DE] font-medium">Connect</button>
+                                )
+                            }
                         </div>
 
                         <div className="flex items-center justify-between">
@@ -117,7 +187,14 @@ function Settings() {
                                 </div>
                                 <span className="text-gray-800">Instagram</span>
                             </div>
-                            <button className="text-sm text-[#AF52DE] font-medium">Connect</button>
+
+                            {
+                                businessDetails?.instagram ? (
+                                    <p className='text-[#AF52DE] text-sm' >{businessDetails?.instagram}</p>
+                                ) : (
+                                    <button className="text-sm text-[#AF52DE] font-medium">Connect</button>
+                                )
+                            }
                         </div>
 
                         <div className="flex items-center justify-between">
@@ -127,7 +204,15 @@ function Settings() {
                                 </div>
                                 <span className="text-gray-800">X fka (Twitter)</span>
                             </div>
-                            <button className="text-sm text-[#AF52DE] font-medium">Connect</button>
+
+                            {
+                                businessDetails?.twitter ? (
+                                    <p className='text-[#AF52DE] text-sm' >{businessDetails?.twitter}</p>
+                                ) : (
+                                    <button className="text-sm text-[#AF52DE] font-medium">Connect</button>
+                                )
+                            }
+
                         </div>
                     </div>
                 </div>
@@ -252,7 +337,7 @@ function Settings() {
                     </Modal>
                 )
             }
-        </div>
+        </div >
     )
 }
 

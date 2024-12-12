@@ -74,7 +74,7 @@ function Deals() {
     }
 
     const proceedToDraft = (deal: any) => {
-        
+
         router.push(`/deals/create?draft=${deal?.id}`)
     }
 
@@ -141,7 +141,10 @@ function Deals() {
                                                 className="border-b hover:bg-gray-50 transition duration-150"
                                             >
                                                 <td className="p-4 flex items-center space-x-4">
-                                                    <img src={deal?.image} className="w-12 h-12 bg-blue-200 rounded-lg" />
+                                                    {
+                                                        activeTab?.toLowerCase() !== "draft" && (
+                                                            <img src={deal?.image} className="w-12 h-12 bg-blue-200 rounded-lg" />
+                                                        )}
                                                     <span className="text-sm font-medium text-gray-700">
                                                         {deal.name}
                                                     </span>

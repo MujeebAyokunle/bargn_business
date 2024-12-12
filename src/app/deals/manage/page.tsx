@@ -3,12 +3,13 @@ import { getchRedeemedDeals } from '@/apis';
 import Nav from '@/components/Nav.tsx'
 import { getPages } from '@/helper/functions';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { IoIosSearch } from 'react-icons/io';
 import { IoEllipsisVertical } from 'react-icons/io5';
 import Cookies from 'js-cookie';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
+import _ from "lodash";
 
 function Managedeals() {
 
@@ -28,17 +29,31 @@ function Managedeals() {
     }, [])
 
     useEffect(() => {
-        initialize()
+        initialize("")
     }, [pageNumber])
 
     const onPageChange = (page: number) => setPageNumber(page)
 
-    const initialize = async () => {
-        getchRedeemedDeals(pageNumber, response => {
+    const initialize = async (search_text: string) => {
+        let json = {
+            page_number: pageNumber,
+            search_text
+        }
+        getchRedeemedDeals(json, response => {
 
             setRedeemedDeals(response?.redeemed_deals)
             setTotalPages(response?.totalSalesPages)
         })
+    }
+
+    const handleChange = useCallback(
+        _.debounce((newValue) => {
+            initialize(newValue)
+        }, 500), []);
+
+    const searchDeal = (event: any) => {
+
+        handleChange(event.target.value);
     }
 
     return (
@@ -50,7 +65,7 @@ function Managedeals() {
                     <div className='items-center grid grid-cols-7 gap-6 mt-6 mb-12' >
                         <div className='flex col-span-2 items-center p-2 rounded-lg bg-white'>
                             <IoIosSearch color='#979797' size={22} />
-                            <input placeholder='Search deals' type="text" className='flex flex-1 text-black text-[16px] focus:outline-none ms-2' />
+                            <input onChange={searchDeal} placeholder='Search deals' type="text" className='flex flex-1 text-black text-[16px] focus:outline-none ms-2' />
                         </div>
 
                         <select name="id" id="id" className='col-span-1 rounded-lg bg-white p-3 text-[#979797] text-[16px] focus:outline-none'>

@@ -3,11 +3,14 @@ import Nav from '@/components/Nav.tsx'
 import { usePathname, useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
 import Cookies from 'js-cookie';
+import { useDispatch } from 'react-redux';
+import { fetchBusinessDetailsThunk } from '@/lib/features/businessSlice';
 
 function layout({ children }: any) {
 
     const router = useRouter()
     const pathName = usePathname()
+    const dispatch: any = useDispatch()
 
     const navigateFunc = (url: string) => {
         router.push(url)
@@ -19,6 +22,7 @@ function layout({ children }: any) {
             router.push("/")
             return
         }
+        dispatch(fetchBusinessDetailsThunk())
     }, [])
 
     return (

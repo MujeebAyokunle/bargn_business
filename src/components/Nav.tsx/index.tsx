@@ -140,7 +140,7 @@ function Nav({ children }: NavProps) {
                 </div>
 
             </div>
-            <div className='lg:w-5/6 flex ml-[16.67%]'>
+            <div className='w-full lg:w-5/6 flex ml-[16.67%]'>
                 <div className='h-14 w-full pr-[18%] fixed z-10 border-b bg-white justify-between flex items-center px-6 border-b-[#B2B2B2]'>
                     <div className='flex items-center space-x-4' >
                         <PiSidebar className='cursor-pointer' size={20} color={ColorSchema.black} />
@@ -246,7 +246,7 @@ function Nav({ children }: NavProps) {
 
                     </div>
                 </div>
-                <div onClick={() => setOpenOptions(false)} className='p-4 mt-14' style={{ flex: 1 }}>
+                <div onClick={() => setOpenOptions(false)} className='p-4 w-full mt-14' style={{ flex: 1 }}>
                     {children}
                 </div>
             </div>

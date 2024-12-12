@@ -180,12 +180,10 @@ export const getCoordinateApi = async (place_id: string, cb: (param: any) => voi
     }
 }
 
-export const getchRedeemedDeals = async (page_number: number, cb: (param: any) => void) => {
+export const getchRedeemedDeals = async (json: { page_number: number, search_text: string }, cb: (param: any) => void) => {
     try {
         const response = await axiosInstance.get("/business/redeemeddeals", {
-            params: {
-                page_number
-            }
+            params: json
         })
 
         cb(response?.data || response)
@@ -205,6 +203,34 @@ export const fetchBusinessDetails = async (cb: (param: any) => void) => {
         cb(response?.data || response)
     } catch (error: any) {
         console.log("get business details error", error.message)
+        return {
+            error: true,
+            message: error?.response?.data
+        }
+    }
+}
+
+export const UpdateMessageNotificationApi = async (json: { value: boolean, notification_medium: string }, cb: (param: any) => void) => {
+    try {
+        const response = await axiosInstance.post("/business/notification", json)
+
+        cb(response?.data || response)
+    } catch (error: any) {
+        console.log("get notification method error", error.message)
+        return {
+            error: true,
+            message: error?.response?.data
+        }
+    }
+}
+
+export const UpdateLanguageApi = async (json: { language: string }, cb: (param: any) => void) => {
+    try {
+        const response = await axiosInstance.post("/business/language", json)
+
+        cb(response?.data || response)
+    } catch (error: any) {
+        console.log("update language error", error.message)
         return {
             error: true,
             message: error?.response?.data

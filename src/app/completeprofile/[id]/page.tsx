@@ -166,8 +166,8 @@ function CompleteProfile() {
         let formData = new FormData()
 
         formData.append("business_name", formValues.businessName)
-        formData.append("phone_country_code", formValues.phoneNumber?.slice(0, 3))
-        formData.append("phone_number", formValues.phoneNumber?.slice(3))
+        formData.append("phone_country_code", formValues.phoneNumberCode)
+        formData.append("phone_number", formValues.phoneNumber)
         formData.append("website", formValues.website)
         formData.append("business_category", parsedCategory?.name)
         formData.append("business_category_id", parsedCategory?.id?.toString())
@@ -313,8 +313,6 @@ function CompleteProfile() {
         })
     }
 
-    console.log({ uploadedImageUrls })
-
     return (
         <div className="min-h-screen flex flex-col items-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
 
@@ -349,6 +347,7 @@ function CompleteProfile() {
                                 longitude: 0,
                                 state: '',
                                 bio: '',
+                                phoneNumberCode: "",
                                 postalCode: '',
                                 country: '',
                             }}
@@ -394,7 +393,11 @@ function CompleteProfile() {
                                                     inputStyle={{ color: ColorSchema.black, width: "100%", border: "none" }}
                                                     dropdownStyle={{ color: "black" }}
                                                     value={values.phoneNumber}
-                                                    onChange={phone => setFieldValue('phoneNumber', phone)}
+                                                    onChange={(phone, data: any) => {
+                                                        setFieldValue('phoneNumber', phone.substring(data.dialCode?.length))
+                                                        setFieldValue('phoneNumberCode', data.dialCode)
+
+                                                    }}
                                                 />
                                             </div>
                                             <ErrorMessage

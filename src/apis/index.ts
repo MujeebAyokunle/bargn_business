@@ -217,10 +217,10 @@ export const UpdateMessageNotificationApi = async (json: { value: boolean, notif
         cb(response?.data || response)
     } catch (error: any) {
         console.log("get notification method error", error.message)
-        return {
+        cb({
             error: true,
             message: error?.response?.data
-        }
+        })
     }
 }
 
@@ -231,10 +231,10 @@ export const UpdateLanguageApi = async (json: { language: string }, cb: (param: 
         cb(response?.data || response)
     } catch (error: any) {
         console.log("update language error", error.message)
-        return {
+        cb({
             error: true,
             message: error?.response?.data
-        }
+        })
     }
 }
 
@@ -245,10 +245,10 @@ export const sendOTPApi = async (json: { channel: string, email: string }, cb: (
         cb(response?.data || response)
     } catch (error: any) {
         console.log("update language error", error.message)
-        return {
+        cb({
             error: true,
             message: error?.response?.data
-        }
+        })
     }
 }
 
@@ -259,9 +259,24 @@ export const resetPasswordAPI = async (json: { newPassword: string, token: strin
         cb(response?.data || response)
     } catch (error: any) {
         console.log("reset password error", error.message)
-        return {
+        cb({
             error: true,
             message: error?.response?.data
-        }
+        })
+    }
+}
+
+export const editBusinessDetailsApi = async (json: any, cb: (param: any) => void) => {
+    try {
+        const response = await axiosInstance.put("/business/details", json, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+
+        cb(response?.data || response)
+    } catch (error: any) {
+        console.log("edit details error", error.message)
+        cb(error?.response?.data)
     }
 }

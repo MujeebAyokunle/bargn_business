@@ -17,7 +17,7 @@ const apiKey = process.env.GOOGLE_API_KEY || "AIzaSyD_hA8Lkcm7jjW6gM9_-VgZjD4O9D
 
 function Profile() {
 
-    const { userData, businessDetails } = useAppSelector(data => data.business)
+    const { userData, businessDetails } = useAppSelector((data: any) => data.business)
     const profileImageRef = useRef<any>()
     const dispatch: any = useDispatch()
 

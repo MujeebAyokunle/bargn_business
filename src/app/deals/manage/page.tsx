@@ -1,7 +1,7 @@
 "use client"
-import { getchRedeemedDeals } from '@/apis';
+import { getchRedeemedDeals, redeemCustomerDeal } from '@/apis';
 import Nav from '@/components/Nav.tsx'
-import { getPages } from '@/helper/functions';
+import { errorToast, getPages, successToast, toTitleCase } from '@/helper/functions';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
@@ -16,7 +16,11 @@ function Managedeals() {
     const router = useRouter()
 
     const [pageNumber, setPageNumber] = useState(1);
+    const [dealToRedeem, setDealToRedeem] = useState(1);
     const [totalPages, setTotalPages] = useState<number>(1)
+    const [status, setStatus] = useState<string>("")
+    const [searchText, setSearchText] = useState<string>("")
+    const [openModal, setOpenModal] = useState<boolean>(false)
     const [redeemedDeals, setRedeemedDeals] = useState<any>([])
 
     useEffect(() => {
@@ -30,14 +34,15 @@ function Managedeals() {
 
     useEffect(() => {
         initialize("")
-    }, [pageNumber])
+    }, [pageNumber, status])
 
     const onPageChange = (page: number) => setPageNumber(page)
 
     const initialize = async (search_text: string) => {
         let json = {
             page_number: pageNumber,
-            search_text
+            search_text,
+            status
         }
         getchRedeemedDeals(json, response => {
 
@@ -52,8 +57,26 @@ function Managedeals() {
         }, 500), []);
 
     const searchDeal = (event: any) => {
+        const value = event.target.value
+        setSearchText(value)
+        handleChange(value);
+    }
 
-        handleChange(event.target.value);
+    const redeemDeal = (param: "redeemed" | "cancelled") => {
+        
+        let json = {
+            response: param,
+            mydeal_id: dealToRedeem
+        }
+        redeemCustomerDeal(json, response => {
+            if (!response.error) {
+                successToast(response?.message)
+                setOpenModal(false)
+                initialize(searchText)
+            } else {
+                errorToast(response?.message)
+            }
+        })
     }
 
     return (
@@ -63,21 +86,15 @@ function Managedeals() {
                     <h1 className="text-2xl text-[#0A0909] font-bold">Manage deals</h1>
 
                     <div className='items-center grid grid-cols-7 gap-6 mt-6 mb-12' >
-                        <div className='flex col-span-2 items-center p-2 rounded-lg bg-white'>
+                        <div className='flex col-span-3 items-center p-2 rounded-lg bg-white'>
                             <IoIosSearch color='#979797' size={22} />
                             <input onChange={searchDeal} placeholder='Search deals' type="text" className='flex flex-1 text-black text-[16px] focus:outline-none ms-2' />
                         </div>
 
-                        <select name="id" id="id" className='col-span-1 rounded-lg bg-white p-3 text-[#979797] text-[16px] focus:outline-none'>
-                            <option value="Redemption ID">Redemtion ID</option>
-                        </select>
-
-                        <select name="deals" id="deals" className='col-span-1 rounded-lg bg-white p-3 text-[#979797] text-[16px] focus:outline-none'>
-                            <option value="deals">Deals</option>
-                        </select>
-
-                        <select name="deals_statue" id="deals_status" className='col-span-1 rounded-lg bg-white p-3 text-[#979797] focus:outline-none text-[16px]'>
-                            <option value="deals status">Deals status</option>
+                        <select onChange={(event) => setStatus(event.target.value)} name="deals_statue" id="deals_status" className='col-span-2 rounded-lg bg-white p-3 text-[#979797] focus:outline-none text-[16px]'>
+                            <option value="">...</option>
+                            <option value="progress">Progress</option>
+                            <option value="redeemed">Redeemed</option>
                         </select>
                     </div>
 
@@ -92,7 +109,7 @@ function Managedeals() {
                                     <th className="px-6 py-4 text-sm font-medium text-gray-600">Redemption ID</th>
                                     <th className="px-6 py-4 text-sm font-medium text-gray-600">Deals</th>
                                     <th className="px-6 py-4 text-sm font-medium text-gray-600">Date</th>
-                                    {/* <th className="px-6 py-4 text-sm font-medium text-gray-600">Deal Status</th> */}
+                                    <th className="px-6 py-4 text-sm font-medium text-gray-600">Deal Status</th>
                                     <th className="px-6 py-4 text-sm font-medium text-gray-600">Amount</th>
                                     <th className="px-6 py-4 text-sm font-medium text-gray-600">Location</th>
                                     <th className="px-6 py-4 text-sm font-medium text-gray-600">Action</th>
@@ -107,23 +124,45 @@ function Managedeals() {
                                         <td className="px-6 py-4 text-sm text-gray-800">{deal.order_id}</td>
                                         <td className="px-6 py-4 text-sm text-gray-800">{deal?.deal?.name}</td>
                                         <td className="px-6 py-4 text-sm text-gray-800">{moment(deal.createdAt).format("dd-mm-yyy")}</td>
-                                        {/* <td className="px-6 py-4 text-sm flex items-center space-x-1">
-                                            <div style={{ width: 6, height: 6, borderRadius: 3 }} className={`${deal.status === "Redeemed"
+                                        <td className="px-6 py-4 text-sm flex items-center space-x-1">
+                                            <div style={{ width: 6, height: 6, borderRadius: 3 }} className={`${deal.status === "redeemed"
                                                 ? "bg-green-500"
-                                                : deal.status === "Completed"
-                                                    ? "bg-blue-500"
-                                                    : "bg-red-500"
+                                                : "bg-red-500"
                                                 }`} />
                                             <p className='text-black'>
-                                                {deal.status}
+                                                {toTitleCase(deal.status)}
                                             </p>
-                                        </td> */}
+                                        </td>
                                         <td className="px-6 py-4 text-sm text-gray-800">€{deal.revenue}</td>
                                         <td className="px-6 py-4 text-sm text-gray-800">{deal.location}</td>
-                                        <td className="px-6 py-4 text-sm text-gray-800">
-                                            <button className="text-gray-500 hover:text-gray-700">
+                                        <td className="px-6 py-4 text-sm text-gray-800 relative">
+
+                                            <button onClick={() => {
+                                                setDealToRedeem(deal.id)
+                                                setOpenModal(prev => !prev)
+                                            }} className="text-gray-500 hover:text-gray-700">
                                                 <IoEllipsisVertical color='black' className='cursor-pointer' />
                                             </button>
+
+                                            {
+                                                (dealToRedeem == deal.id && openModal) && (
+                                                    <div className='bg-white px-4 rounded-md absolute shadow-sm border z-10 top-10 left-0 flex-col py-2 justify-center items-center flex' >
+                                                        <div>
+                                                            <p onClick={() => redeemDeal("redeemed")} className='text-[#333] cursor-pointer text-center text-md' > Redeem </p>
+                                                        </div>
+                                                        <div>
+                                                            <p onClick={() => redeemDeal("cancelled")} className='text-[#333] cursor-pointer mt-2 text-center text-md' > Revoke </p>
+                                                        </div>
+                                                        <hr className='bg-[#333] w-full my-2' />
+                                                        <div>
+                                                            <p onClick={() => {
+                                                                setOpenModal(false)
+                                                            }} className='text-[#333] cursor-pointer text-center text-md' > Cancel </p>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            }
+
                                         </td>
                                     </tr>
                                 ))}

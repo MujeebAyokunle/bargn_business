@@ -280,3 +280,14 @@ export const editBusinessDetailsApi = async (json: any, cb: (param: any) => void
         cb(error?.response?.data)
     }
 }
+
+export const redeemCustomerDeal = async (json: any, cb: (param: any) => void) => {
+    try {
+        const response = await axiosInstance.post("/business/deal/redeem", json)
+
+        cb(response?.data || response)
+    } catch (error: any) {
+        console.log("edit details error", error.message)
+        cb(error?.response?.data)
+    }
+}

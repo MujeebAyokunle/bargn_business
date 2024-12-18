@@ -63,7 +63,7 @@ function Managedeals() {
     }
 
     const redeemDeal = (param: "redeemed" | "cancelled") => {
-        
+
         let json = {
             response: param,
             mydeal_id: dealToRedeem
@@ -93,8 +93,9 @@ function Managedeals() {
 
                         <select onChange={(event) => setStatus(event.target.value)} name="deals_statue" id="deals_status" className='col-span-2 rounded-lg bg-white p-3 text-[#979797] focus:outline-none text-[16px]'>
                             <option value="">...</option>
-                            <option value="progress">Progress</option>
+                            <option value="pending">Pending</option>
                             <option value="redeemed">Redeemed</option>
+                            <option value="cancelled">Cancelled</option>
                         </select>
                     </div>
 

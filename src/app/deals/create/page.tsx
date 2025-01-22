@@ -1,10 +1,10 @@
 "use client"
-import Nav from '@/components/Nav.tsx'
+import Nav from '@/components/Nav'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { createDealApi, createDealDraftApi, fetchSingleDraftApi } from '@/apis';
+import { createDealApi, createDealDraftApi, fetchCategoriesApi, fetchSingleDraftApi } from '@/apis';
 import { errorToast, successToast } from '@/helper/functions';
 import ActivityLoader from '@/components/ActivityLoader';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -38,6 +38,7 @@ function CreateDeal() {
     const [draftLoading, setDraftLoading] = useState(false)
     const [isDragging, setIsDragging] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [categories, setCategories] = useState([]);
 
     const formik: any = useFormik({
         initialValues: {
@@ -97,7 +98,19 @@ function CreateDeal() {
         }
 
         fetchSavedDraft()
+        fetchCategories()
     }, [draft_id])
+
+    const fetchCategories = async () => {
+        fetchCategoriesApi(response => {
+
+            if (!response?.error) {
+                let tempCat = response?.categories.map((data: any) => { return { name: data?.name, id: data?.id } })
+                console.log({ tempCat: tempCat })
+                setCategories(tempCat)
+            }
+        })
+    }
 
     // Fetch saved draft
     const fetchSavedDraft = () => {
@@ -260,9 +273,11 @@ function CreateDeal() {
                                     onBlur={formik.handleBlur}
                                 >
                                     <option value="">Select Category</option>
-                                    <option value="Travel & Hotels">Travel & Hotels</option>
-                                    <option value="Villa Collection">Villa Collection</option>
-                                    <option value="Experience">Experience</option>
+                                    {
+                                        categories?.map((data: any, index: number) => (
+                                            <option key={index} value={data?.name}>{data?.name}</option>
+                                        ))
+                                    }
                                 </select>
                                 {formik.touched.dealsCategory && formik.errors.dealsCategory && (
                                     <p className="text-red-500 text-sm mt-1">{formik.errors.dealsCategory}</p>

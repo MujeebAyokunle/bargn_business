@@ -1,5 +1,5 @@
 "use client"
-import Nav from '@/components/Nav.tsx'
+import Nav from '@/components/Nav'
 import { usePathname, useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
 import Cookies from 'js-cookie';

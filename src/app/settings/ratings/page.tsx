@@ -1,4 +1,4 @@
-import Nav from '@/components/Nav.tsx'
+import Nav from '@/components/Nav'
 import React from 'react'
 
 function Ratings() {

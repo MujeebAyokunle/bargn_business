@@ -1,6 +1,6 @@
 "use client"
 import { getchRedeemedDeals, redeemCustomerDeal } from '@/apis';
-import Nav from '@/components/Nav.tsx'
+import Nav from '@/components/Nav'
 import { errorToast, getPages, successToast, toTitleCase } from '@/helper/functions';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react'

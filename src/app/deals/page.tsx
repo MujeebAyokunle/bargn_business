@@ -1,6 +1,6 @@
 "use client"
 import { fetchDealDraftApi, fetchDealsApi } from '@/apis';
-import Nav from '@/components/Nav.tsx';
+import Nav from '@/components/Nav';
 import { errorToast, getPages } from '@/helper/functions';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';

@@ -39,7 +39,7 @@ function AccountCreated() {
                         <br />
                         <span className="text-[#757575] font-bold">{email}</span>
                     </p>
-                    <p className="text-[#757575] font-medium text-[14px] py-2 px-4 rounded">Didn't receive the email? <span onClick={resendVerificationEmail} className="text-blue-700 cursor-pointer">Resend link</span></p>
+                    <p className="text-[#757575] font-medium text-[14px] py-2 px-4 rounded">Didn't receive the email? <span onClick={() => resendVerificationEmail()} className="text-blue-700 cursor-pointer">Resend link</span></p>
                 </div>
             </div>
         </div>

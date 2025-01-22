@@ -1,5 +1,5 @@
 "use client"
-import Nav from '@/components/Nav.tsx'
+import Nav from '@/components/Nav'
 import { LineChart } from '@/components/Svgs/icons'
 import React, { useEffect, useState } from 'react'
 import { Doughnut } from 'react-chartjs-2';

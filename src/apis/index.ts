@@ -252,20 +252,6 @@ export const sendOTPApi = async (json: { channel: string, email: string }, cb: (
     }
 }
 
-export const resetPasswordAPI = async (json: { newPassword: string, token: string, email: string }, cb: (param: any) => void) => {
-    try {
-        const response = await axiosInstance.post("/business/resetpassword", json)
-
-        cb(response?.data || response)
-    } catch (error: any) {
-        console.log("reset password error", error.message)
-        cb({
-            error: true,
-            message: error?.response?.data
-        })
-    }
-}
-
 export const editBusinessDetailsApi = async (json: any, cb: (param: any) => void) => {
     try {
         const response = await axiosInstance.put("/business/details", json, {
@@ -289,5 +275,17 @@ export const redeemCustomerDeal = async (json: any, cb: (param: any) => void) =>
     } catch (error: any) {
         console.log("edit details error", error.message)
         cb(error?.response?.data)
+    }
+}
+
+export const resetPasswordApi = async (json: any, cb: (param: any) => void) => {
+    try {
+        const response = await axiosInstance.post("/business/resetpassword", json)
+
+        cb(response?.data)
+
+    } catch (error: any) {
+        console.log("error", error?.response?.data)
+        cb(error?.response?.data || { error: true, message: "An error occured" })
     }
 }

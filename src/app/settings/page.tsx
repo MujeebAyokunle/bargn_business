@@ -1,5 +1,5 @@
 "use client"
-import { fetchBusinessDetails, resetPasswordAPI, sendOTPApi, UpdateLanguageApi, UpdateMessageNotificationApi } from '@/apis'
+import { resetPasswordApi, sendOTPApi, UpdateLanguageApi, UpdateMessageNotificationApi } from '@/apis'
 import ActivityLoader from '@/components/ActivityLoader'
 import CustomSwitch from '@/components/CustomSwitch'
 import Modal from '@/components/Modal'
@@ -167,7 +167,7 @@ function Settings() {
             console.log(errors); // Display errors
             return
         }
-        
+
         setResetLoading(true)
 
         let json = {
@@ -176,7 +176,7 @@ function Settings() {
             email
         }
 
-        resetPasswordAPI(json, response => {
+        resetPasswordApi(json, (response: any) => {
             setResetLoading(false)
             if (!response?.error) {
                 setEmail("")

@@ -3,7 +3,7 @@ import { ColorSchema } from '@/helper/colorScheme';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useState } from 'react'
-import { BsGridFill } from 'react-icons/bs';
+import { BsFillQuestionOctagonFill, BsGridFill, BsQuestionOctagon } from 'react-icons/bs';
 import { FiPlus } from 'react-icons/fi';
 import { GoChevronDown, GoChevronUp } from 'react-icons/go';
 import { IoChevronDown, IoChevronUp, IoLogOutOutline, IoSearch, IoSettingsOutline, IoSunnyOutline } from 'react-icons/io5';
@@ -126,9 +126,15 @@ function Nav({ children }: NavProps) {
 
                         <div className="border-t pt-4">
                             <ul className="space-y-4">
-                                <li className="flex text-[14px] items-center space-x-3 text-gray-700 hover:text-black">
-                                    <AiOutlineQuestionCircle size={22} />
-                                    <span>Help & Support</span>
+                                <li onClick={() => navigateFunc("/support")} className={`flex cursor-pointer text-[14px] items-center px-3 py-2 space-x-3 text-gray-700 hover:text-black ${pathName.includes("support") && "nav_active"}`}>
+                                    {
+                                        !pathName.includes("support") ? (
+                                            <BsQuestionOctagon size={22} />
+                                        ) : (
+                                            <BsFillQuestionOctagonFill size={22} />
+                                        )
+                                    }
+                                    <span>Support Center</span>
                                 </li>
                                 <li onClick={logout} className="flex cursor-pointer items-center space-x-3 text-gray-700 text-[14px] hover:text-black">
                                     <Logout />

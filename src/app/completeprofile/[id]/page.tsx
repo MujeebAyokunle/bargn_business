@@ -459,12 +459,7 @@ function CompleteProfile() {
                                                     },
                                                 }}
                                             />
-                                            {/* {selectedPlace && (
-                                        <div>
-                                            <h4>Selected Place:</h4>
-                                            <p className='text-black text-[14px]'>{selectedPlace?.label}</p>
-                                        </div>
-                                    )} */}
+
                                             <ErrorMessage
                                                 name="streetAddress"
                                                 component="div"
